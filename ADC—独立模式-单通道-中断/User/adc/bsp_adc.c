@@ -82,11 +82,11 @@ static void ADC_Mode_Config(void)
     //ADC时钟1分频
     ADC_Handle.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
     //使能连续转换模式
-    ADC_Handle.Init.ContinuousConvMode = DISABLE;
+    ADC_Handle.Init.ContinuousConvMode = ENABLE;
     //数据存放在数据寄存器中
     ADC_Handle.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
     //关闭不连续转换模式
-    ADC_Handle.Init.DiscontinuousConvMode = ENABLE;
+    ADC_Handle.Init.DiscontinuousConvMode = DISABLE;
     ADC_Handle.Init.NbrOfDiscConversion = 3;
     
     //使能EOC标志位
