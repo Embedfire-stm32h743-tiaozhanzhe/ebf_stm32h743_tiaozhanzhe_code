@@ -21,19 +21,19 @@
 #define I2C_OWN_ADDRESS7      0X0A   
 
 /*I2C½Ó¿Ú*/
-#define EEPROM_I2C                          I2C4
-#define EEPROM_I2C_CLK_ENABLE()             __HAL_RCC_I2C4_CLK_ENABLE()
-#define RCC_PERIPHCLK_I2Cx               	RCC_PERIPHCLK_I2C4
+#define EEPROM_I2C                          I2C1
+#define EEPROM_I2C_CLK_ENABLE()             __HAL_RCC_I2C1_CLK_ENABLE()
+#define RCC_PERIPHCLK_I2Cx               	RCC_PERIPHCLK_I2C1
 
-#define EEPROM_I2C_SCL_PIN                  GPIO_PIN_12                 
-#define EEPROM_I2C_SCL_GPIO_PORT            GPIOD                       
-#define EEPROM_I2C_SCL_GPIO_CLK_ENABLE()    __GPIOD_CLK_ENABLE()
-#define EEPROM_I2C_SCL_AF                   GPIO_AF4_I2C4
+#define EEPROM_I2C_SCL_PIN                  GPIO_PIN_6                
+#define EEPROM_I2C_SCL_GPIO_PORT            GPIOB                       
+#define EEPROM_I2C_SCL_GPIO_CLK_ENABLE()    __GPIOB_CLK_ENABLE()
+#define EEPROM_I2C_SCL_AF                   GPIO_AF4_I2C1
 
-#define EEPROM_I2C_SDA_PIN                  GPIO_PIN_13                  
-#define EEPROM_I2C_SDA_GPIO_PORT            GPIOD                       
-#define EEPROM_I2C_SDA_GPIO_CLK_ENABLE()    __GPIOD_CLK_ENABLE()
-#define EEPROM_I2C_SDA_AF                   GPIO_AF4_I2C4
+#define EEPROM_I2C_SDA_PIN                  GPIO_PIN_7                 
+#define EEPROM_I2C_SDA_GPIO_PORT            GPIOB                       
+#define EEPROM_I2C_SDA_GPIO_CLK_ENABLE()    __GPIOB_CLK_ENABLE()
+#define EEPROM_I2C_SDA_AF                   GPIO_AF4_I2C1
 
 
 

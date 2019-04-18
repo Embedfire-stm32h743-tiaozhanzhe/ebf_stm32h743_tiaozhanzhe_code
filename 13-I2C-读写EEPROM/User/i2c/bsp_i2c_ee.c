@@ -30,7 +30,6 @@ static void I2C_GPIO_Config(void)
 {
 
 	GPIO_InitTypeDef  GPIO_InitStructure;
-	RCC_PeriphCLKInitTypeDef RCC_PeriphClkInit;
 	  
 	/*Ê¹ÄÜI2CÊ±ÖÓ*/
 	EEPROM_I2C_CLK_ENABLE();

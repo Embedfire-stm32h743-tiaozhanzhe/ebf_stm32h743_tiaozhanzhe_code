@@ -26,8 +26,6 @@ UART_HandleTypeDef UartHandle;
 void UARTx_Config(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
-
-	RCC_PeriphCLKInitTypeDef RCC_PeriphClkInit;
 			
 	UARTx_RX_GPIO_CLK_ENABLE();
 	UARTx_TX_GPIO_CLK_ENABLE();

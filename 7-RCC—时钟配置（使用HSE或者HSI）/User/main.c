@@ -41,7 +41,7 @@ int main(void)
     if( Key_Scan(KEY2_GPIO_PORT,KEY2_PIN) == KEY_ON  )
 		{
 			SwitchSystemClock();
-			LED4_TOGGLE;
+			LED2_TOGGLE;
 		} 		
     /* LED…¡À∏ */
     LED3_TOGGLE;

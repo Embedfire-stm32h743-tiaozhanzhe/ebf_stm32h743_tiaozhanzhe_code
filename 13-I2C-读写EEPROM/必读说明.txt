@@ -23,8 +23,8 @@
 
 EEPROM（AT24C02）：
 EEPROM芯片的I2C接口与STM32的I2C4相连,且已接上拉电阻。
-		SCL	<--->PD12
-		SDA	<--->PD13
+		SCL	<--->PB6
+		SDA	<--->PB7
 		
 串口(TTL-USB TO USART)：
 CH340的收发引脚与STM32的发收引脚相连。
