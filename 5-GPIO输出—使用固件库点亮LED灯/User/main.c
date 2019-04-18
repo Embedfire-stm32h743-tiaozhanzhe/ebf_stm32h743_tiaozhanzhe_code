@@ -45,10 +45,6 @@ int main(void)
 		HAL_Delay(1000);
 		LED3( OFF );		  // 灭	
 		
-		LED4( ON );			 // 亮 
-		HAL_Delay(1000);
-		LED4( OFF );		  // 灭	
-		
 		/*轮流显示 红绿蓝黄紫青白 颜色*/
 		LED_RED;
 		HAL_Delay(1000);
