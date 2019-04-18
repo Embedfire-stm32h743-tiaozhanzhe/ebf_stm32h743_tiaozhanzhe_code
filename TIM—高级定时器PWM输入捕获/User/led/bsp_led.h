@@ -19,11 +19,6 @@
 #define LED3_PIN                  GPIO_PIN_12                 
 #define LED3_GPIO_PORT            GPIOH                       
 #define LED3_GPIO_CLK_ENABLE()    __GPIOH_CLK_ENABLE()
-
-//小指示灯
-#define LED4_PIN                  GPIO_PIN_11                 
-#define LED4_GPIO_PORT            GPIOD                       
-#define LED4_GPIO_CLK_ENABLE()    __GPIOD_CLK_ENABLE()
 /************************************************************/
 
 
@@ -44,9 +39,6 @@
 #define LED3(a)	HAL_GPIO_WritePin(LED2_GPIO_PORT,LED3_PIN,a)
 
 
-#define LED4(a)	HAL_GPIO_WritePin(LED4_GPIO_PORT,LED4_PIN,a)
-
-
 /* 直接操作寄存器的方法控制IO */
 #define	digitalHi(p,i)				{p->BSRRL=i;}			  //设置为高电平		
 #define digitalLo(p,i)				{p->BSRRH=i;}				//输出低电平
@@ -65,10 +57,6 @@
 #define LED3_TOGGLE		digitalToggle(LED3_GPIO_PORT,LED3_PIN)
 #define LED3_OFF			digitalHi(LED3_GPIO_PORT,LED3_PIN)
 #define LED3_ON				digitalLo(LED3_GPIO_PORT,LED3_PIN)
-
-#define LED4_TOGGLE		digitalToggle(LED4_GPIO_PORT,LED4_PIN)
-#define LED4_OFF			digitalHi(LED4_GPIO_PORT,LED4_PIN)
-#define LED4_ON				digitalLo(LED4_GPIO_PORT,LED4_PIN)
 
 
 /* 基本混色，后面高级用法使用PWM可混出全彩颜色,且效果更好 */
