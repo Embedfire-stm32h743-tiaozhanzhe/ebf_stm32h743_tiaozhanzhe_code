@@ -8,7 +8,8 @@
 //#define  sFLASH_ID                       0xEF3015     //W25X16
 //#define  sFLASH_ID                       0xEF4015	    //W25Q16
 //#define  sFLASH_ID                       0XEF4017     //W25Q64
-#define  sFLASH_ID                         0XEF4018     //W25Q128
+//#define  sFLASH_ID                         0XEF4018     //W25Q128
+#define  sFLASH_ID                         0XEF4019     //W25Q256
 
 /* QSPI Error codes */
 #define QSPI_OK            ((uint8_t)0x00)
@@ -91,6 +92,7 @@ typedef struct {
 #define PAGE_PROG_CMD                        0x02
 #define QUAD_INPUT_PAGE_PROG_CMD             0x32
 #define EXT_QUAD_IN_FAST_PROG_CMD            0x12
+#define Enter_4Byte_Addr_Mode_CMD            0xB7
 
 /* 擦除操作 */
 #define SECTOR_ERASE_CMD                     0x20
@@ -104,6 +106,7 @@ typedef struct {
 #define W25Q128FV_FSR_BUSY                    ((uint8_t)0x01)    /*!< busy */
 #define W25Q128FV_FSR_WREN                    ((uint8_t)0x02)    /*!< write enable */
 #define W25Q128FV_FSR_QE                      ((uint8_t)0x02)    /*!< quad enable */
+#define W25Q256FV_FSR_4ByteAddrMode           ((uint8_t)0x01)    /*!< 4字节地址模式 */
 /*命令定义-结尾*******************************/
 
 
@@ -136,10 +139,10 @@ typedef struct {
 #define QSPI_FLASH_BK1_IO3_CLK_ENABLE()    __GPIOF_CLK_ENABLE()
 #define QSPI_FLASH_BK1_IO3_AF              GPIO_AF9_QUADSPI
 
-#define QSPI_FLASH_CS_PIN                 GPIO_PIN_6               
+#define QSPI_FLASH_CS_PIN                 GPIO_PIN_10              
 #define QSPI_FLASH_CS_GPIO_PORT           GPIOB                   
 #define QSPI_FLASH_CS_GPIO_CLK_ENABLE()   __GPIOB_CLK_ENABLE()
-#define QSPI_FLASH_CS_GPIO_AF             GPIO_AF10_QUADSPI
+#define QSPI_FLASH_CS_GPIO_AF             GPIO_AF9_QUADSPI
 
 
 
