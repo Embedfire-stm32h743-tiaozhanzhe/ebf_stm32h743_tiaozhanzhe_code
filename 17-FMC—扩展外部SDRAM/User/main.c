@@ -27,7 +27,7 @@ uint32_t RadomBuffer[10000];
 
 uint32_t ReadBuffer[10000];
 
-#define SDRAM_SIZE (W9812G6JH_SIZE/4)
+#define SDRAM_SIZE (IS42S16400J_SIZE/4)
 
 uint32_t *pSDRAM;
 
@@ -59,8 +59,15 @@ int main(void)
 	LED_BLUE;
 
   /*选择PLL输出作为RNG时钟源 */
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RNG;
-  PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_PLL;
+  PeriphClkInitStruct.PLL2.PLL2M = 25;
+  PeriphClkInitStruct.PLL2.PLL2N = 266;
+  PeriphClkInitStruct.PLL2.PLL2P = 1;
+  PeriphClkInitStruct.PLL2.PLL2Q = 1;
+  PeriphClkInitStruct.PLL2.PLL2R = 1;
+  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+  PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
   HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
 
   /*使能RNG时钟*/
@@ -88,7 +95,7 @@ int main(void)
 
 void SDRAM_Check(void)
 {
-    pSDRAM=(uint32_t*)SDRAM_BANK_ADDR;
+  pSDRAM=(uint32_t*)SDRAM_BANK_ADDR;
 	count=0;
 	printf("开始写入SDRAM\r\n");
 	for(sdram_count=0;sdram_count<SDRAM_SIZE;sdram_count++)

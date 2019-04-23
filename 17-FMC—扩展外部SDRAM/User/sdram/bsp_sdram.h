@@ -6,7 +6,8 @@
 
 
 
-#define W9812G6JH_SIZE 0x1000000  //16M字节
+//#define W9812G6JH_SIZE 0x1000000  //16M字节
+#define IS42S16400J_SIZE (32*1024*1024)  //32M字节，W9825G6
 
 /*SDRAM 的bank选择*/  
 #define FMC_BANK_SDRAM            FMC_Bank2_SDRAM  
@@ -38,7 +39,7 @@
 /**
   * @brief  FMC SDRAM 突发读取特性
   */  
-/* #define SDRAM_READBURST    FMC_SDRAM_RBURST_DISABLE*/ 
+//#define SDRAM_READBURST    FMC_SDRAM_RBURST_DISABLE
 #define SDRAM_READBURST    FMC_Read_Burst_Enable  
   
 
@@ -124,6 +125,10 @@
 #define FMC_A11_GPIO_PORT        GPIOG
 #define FMC_A11_GPIO_CLK()       __GPIOG_CLK_ENABLE()
 #define FMC_A11_GPIO_PIN         GPIO_PIN_1
+
+#define FMC_A12_GPIO_PORT        GPIOG
+#define FMC_A12_GPIO_CLK()       __GPIOG_CLK_ENABLE()
+#define FMC_A12_GPIO_PIN         GPIO_PIN_2
 
 /*数据信号线*/
 #define FMC_D0_GPIO_PORT         GPIOD
