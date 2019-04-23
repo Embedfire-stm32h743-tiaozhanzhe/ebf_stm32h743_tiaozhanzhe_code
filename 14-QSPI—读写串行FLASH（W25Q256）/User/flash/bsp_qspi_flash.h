@@ -95,7 +95,7 @@ typedef struct {
 #define Enter_4Byte_Addr_Mode_CMD            0xB7
 
 /* 擦除操作 */
-#define SECTOR_ERASE_CMD                     0x20
+#define SECTOR_ERASE_CMD                     0x20    //0xD8擦：64K    0x52擦：32K     0x20擦：4K   
 #define CHIP_ERASE_CMD                       0xC7
 
 #define PROG_ERASE_RESUME_CMD                0x7A
@@ -107,6 +107,7 @@ typedef struct {
 #define W25Q128FV_FSR_WREN                    ((uint8_t)0x02)    /*!< write enable */
 #define W25Q128FV_FSR_QE                      ((uint8_t)0x02)    /*!< quad enable */
 #define W25Q256FV_FSR_4ByteAddrMode           ((uint8_t)0x01)    /*!< 4字节地址模式 */
+
 /*命令定义-结尾*******************************/
 
 
@@ -149,6 +150,7 @@ typedef struct {
 void QSPI_FLASH_Init(void);
 uint8_t BSP_QSPI_Init(void);
 uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress);
+uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);
 

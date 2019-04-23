@@ -27,7 +27,7 @@ typedef enum { FAILED = 0, PASSED = !FAILED} TestStatus;
 #define countof(a)      (sizeof(a) / sizeof(*(a)))
 #define  BufferSize (countof(Tx_Buffer)-1)
 
-#define  FLASH_WriteAddress     0x00000
+#define  FLASH_WriteAddress     (4096*4096)//
 #define  FLASH_ReadAddress      FLASH_WriteAddress
 #define  FLASH_SectorToErase    FLASH_WriteAddress
 
@@ -93,7 +93,8 @@ int main(void)
 		printf("\r\n写入的数据为：\r\n%s", Tx_Buffer);
 		
 		/* 将刚刚写入的数据读出来放到接收缓冲区中 */
-		BSP_QSPI_Read(Rx_Buffer, FLASH_ReadAddress, BufferSize);
+    BSP_QSPI_FastRead(Rx_Buffer, FLASH_ReadAddress, BufferSize);
+//		BSP_QSPI_Read(Rx_Buffer, FLASH_ReadAddress, BufferSize);
 		printf("\r\n读出的数据为：\r\n%s", Rx_Buffer);
 		
 		/* 检查写入的数据与读出的数据是否相等 */
