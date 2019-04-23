@@ -223,7 +223,7 @@ static void SDRAM_InitSequence(void)
 	/* 配置命令：自动刷新 */   
 	Command.CommandMode = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
 	Command.CommandTarget = FMC_COMMAND_TARGET_BANK;
-	Command.AutoRefreshNumber = 8;
+	Command.AutoRefreshNumber = 4;
 	Command.ModeRegisterDefinition = 0;
 	/* 发送配置命令 */
 	HAL_SDRAM_SendCommand(&sdramHandle, &Command, SDRAM_TIMEOUT);

@@ -229,7 +229,7 @@ void LCD_ClockConfig(void)
 	periph_clk_init_struct.PLL3.PLL3N = 270;
 	periph_clk_init_struct.PLL3.PLL3P = 2;
 	periph_clk_init_struct.PLL3.PLL3Q = 2;
-	periph_clk_init_struct.PLL3.PLL3R = 10;  
+	periph_clk_init_struct.PLL3.PLL3R = 12;  
 	HAL_RCCEx_PeriphCLKConfig(&periph_clk_init_struct);  
 }
 void LCD_Init(void)

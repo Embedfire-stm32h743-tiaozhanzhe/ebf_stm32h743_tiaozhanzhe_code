@@ -223,7 +223,7 @@ static void SDRAM_InitSequence(void)
 	/* 配置命令：自动刷新 */   
 	Command.CommandMode = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
 	Command.CommandTarget = FMC_COMMAND_TARGET_BANK;
-	Command.AutoRefreshNumber = 8;
+	Command.AutoRefreshNumber = 4;
 	Command.ModeRegisterDefinition = 0;
 	/* 发送配置命令 */
 	HAL_SDRAM_SendCommand(&sdramHandle, &Command, SDRAM_TIMEOUT);
@@ -250,7 +250,7 @@ static void SDRAM_InitSequence(void)
 	/* 刷新周期=64ms/4096行=15.625us */
 	/* COUNT=(15.625us x Freq) - 20 */
 	/* 设置自刷新速率 */
-	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 1855); 
+	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 1855/2); //1855
 }
 
 
@@ -280,6 +280,8 @@ void SDRAM_Init(void)
   RCC_PeriphClkInit.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   RCC_PeriphClkInit.PLL2.PLL2FRACN = 0;
   RCC_PeriphClkInit.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
+  RCC_PeriphClkInit.FmcClockSelection = RCC_FMCCLKSOURCE_D1HCLK;
+  RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FMC;
   if (HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit) != HAL_OK)
   {
     while(1);
