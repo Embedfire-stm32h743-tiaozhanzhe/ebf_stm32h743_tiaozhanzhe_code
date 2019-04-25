@@ -48,15 +48,12 @@ int main(void)
 	Key_GPIO_Config();
 	
 	CAN_Config();
-	printf("\r\n欢迎使用野火  STM32 H743 开发板。\r\n");	
+	printf("\r\n欢迎使用野火 STM32 H743 开发板。\r\n");	
 	printf("\r\n 野火H743 CAN通讯实验例程\r\n");			
 	printf("\r\n 实验步骤：\r\n");
-
-	printf("\r\n 1.使用导线连接好两个CAN讯设备\r\n");
-	printf("\r\n 2.使用跳线帽连接好:5v --- C/4-5V \r\n");
-	printf("\r\n 3.按下开发板的KEY1键，会使用CAN向外发送0-11的数据包，包的扩展ID为0x1314 \r\n");
-	printf("\r\n 4.若开发板的CAN接收到扩展ID为0x1314的数据包，会把数据以打印到串口。 \r\n");
-	printf("\r\n 5.本例中的can波特率为1MBps。 \r\n");
+	printf("\r\n 1.本实验为回环测试，只需一块开发板即可\r\n");
+	printf("\r\n 2.跳线帽5v --- C/4-5V 也不用接（多机需要）\r\n");
+  printf("\r\n 3.按下 KEY1 可以发送报文，然后开发板会自己收到报文\r\n");
   
 	while(1)
 	{	

@@ -143,7 +143,7 @@ static void CAN_Filter_Config(void)
   sFilterConfig.FilterIndex = 0;
   sFilterConfig.FilterType = FDCAN_FILTER_DUAL;
   sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXBUFFER;
-  sFilterConfig.FilterID1 = 0x1314;
+  sFilterConfig.FilterID1 = 0x2568;
   sFilterConfig.FilterID2 = 0x2568;
   sFilterConfig.RxBufferIndex = 0;
   HAL_FDCAN_ConfigFilter(&hfdcan, &sFilterConfig);
