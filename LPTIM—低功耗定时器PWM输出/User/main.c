@@ -19,6 +19,8 @@
 #include "./lptim/bsp_lptim.h"
 #include "./key/bsp_key.h" 
 #include "./delay/core_delay.h"  
+#include "./usart/bsp_debug_usart.h"
+
 static HAL_StatusTypeDef LPTIM_ClockEnable(void);
 
 //static HAL_StatusTypeDef LSE_ClockEnable(void);
@@ -37,10 +39,20 @@ int main(void)
 	LPTIM_ClockEnable();
 	/* 初始化按键GPIO */
 	Key_GPIO_Config();
-    /* 低功耗定时器在低功耗模式输出PWM */
-	LPTIM_PWM_OUT();
+  /* 串口初始化 */
+  DEBUG_USART_Config();
+    
+  printf("\r\n 欢迎使用野火 STM32 H743 开发板\r\n");
+  printf("\r\n 按下 KEY1 进入低功耗模式输出PWM\r\n");
 	while(1)
 	{
+    if (Key_Scan(KEY1_GPIO_PORT, KEY1_PIN) == KEY_ON)
+    {
+      printf("\r\n 进入低功耗模式输出PWM，如需再次烧录程序请重启或复位开发板\r\n");
+      
+      /* 低功耗定时器在低功耗模式输出PWM */
+      LPTIM_PWM_OUT();
+    }
 		
 	}			
 }
