@@ -19,7 +19,7 @@
 #include "ff_gen_drv.h"
 
 static volatile DSTATUS TM_FATFS_FLASH_SPI_Stat = STA_NOINIT;	/* Physical drive status */
-
+static uint8_t QSPI_Addr_Mode_Init(void);
 
 QSPI_HandleTypeDef hqspi;
 
@@ -100,7 +100,7 @@ DSTATUS TM_FATFS_FLASH_SPI_disk_initialize(BYTE lun)
 	hqspi.Init.ClockPrescaler = 1;
 	hqspi.Init.FifoThreshold = 4;
 	hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE;
-	hqspi.Init.FlashSize = 23;
+	hqspi.Init.FlashSize = 24;
 	hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_6_CYCLE;
 	hqspi.Init.ClockMode = QSPI_CLOCK_MODE_0;
 	HAL_QSPI_Init(&hqspi);
@@ -158,8 +158,116 @@ uint8_t BSP_QSPI_Init(void)
   {
     return QSPI_ERROR;
   }
+  
+  /* 配置地址模式为 4 字节 */
+  if (QSPI_Addr_Mode_Init() != QSPI_OK)   
+  {
+		return QSPI_ERROR;
+	}
 	
   return QSPI_OK;
+}
+
+/**
+  * @brief  检查地址模式不是4字节地址，配置为4字节
+  * @retval QSPI存储器状态
+  */
+static uint8_t QSPI_Addr_Mode_Init(void)
+{
+	QSPI_CommandTypeDef s_command;
+	uint8_t reg;
+	/* 初始化读取状态寄存器命令 */
+	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+	s_command.Instruction       = READ_STATUS_REG3_CMD;
+	s_command.AddressMode       = QSPI_ADDRESS_NONE;
+	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	s_command.DataMode          = QSPI_DATA_1_LINE;
+	s_command.DummyCycles       = 0;
+	s_command.NbData            = 1;
+	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+	/* 配置命令 */
+	if (HAL_QSPI_Command(&QSPIHandle, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return QSPI_ERROR;
+	}
+	/* 接收数据 */
+	if (HAL_QSPI_Receive(&QSPIHandle, &reg, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return QSPI_ERROR;
+	} 
+  
+	/* 检查寄存器的值 */
+	if((reg & W25Q256FV_FSR_4ByteAddrMode) == 1)    // 4字节模式
+	{
+    return QSPI_OK;
+	}
+  else    // 3字节模式
+  {
+    /* 配置进入 4 字节地址模式命令 */
+		s_command.Instruction = Enter_4Byte_Addr_Mode_CMD;
+    s_command.DataMode    = QSPI_DATA_NONE;
+
+    /* 配置并发送命令 */
+    if (HAL_QSPI_Command(&QSPIHandle, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+    {
+      return QSPI_ERROR;
+    }
+    
+    /* 自动轮询模式等待存储器就绪 */  
+    if (QSPI_AutoPollingMemReady(W25Q128FV_SUBSECTOR_ERASE_MAX_TIME) != QSPI_OK)
+    {
+      return QSPI_ERROR;
+    }
+    
+    return QSPI_OK;
+  }
+}
+
+/**
+  * @brief  从QSPI存储器中读取大量数据.
+  * @param  pData: 指向要读取的数据的指针
+  * @param  ReadAddr: 读取起始地址
+  * @param  Size: 要读取的数据大小    
+  * @retval QSPI存储器状态
+  */
+uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
+{
+	QSPI_CommandTypeDef s_command;
+
+//  if(Size == 0)
+//  {
+//    BURN_DEBUG("BSP_QSPI_FastRead Size = 0");
+//    return QSPI_OK;
+//  }
+	/* 初始化读命令 */
+	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+	s_command.Instruction       = QUAD_INOUT_FAST_READ_CMD;
+	s_command.AddressMode       = QSPI_ADDRESS_4_LINES;
+	s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
+	s_command.Address           = ReadAddr;
+	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	s_command.DataMode          = QSPI_DATA_4_LINES;
+	s_command.DummyCycles       = 6;
+	s_command.NbData            = Size;
+	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+	/* 配置命令 */
+	if (HAL_QSPI_Command(&QSPIHandle, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return QSPI_ERROR;
+	}
+
+	/* 接收数据 */
+	if (HAL_QSPI_Receive(&QSPIHandle, pData, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return QSPI_ERROR;
+	}
+	return QSPI_OK;
 }
 
 /**
@@ -176,7 +284,7 @@ uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
   s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
   s_command.Instruction       = READ_CMD;
   s_command.AddressMode       = QSPI_ADDRESS_1_LINE;
-  s_command.AddressSize       = QSPI_ADDRESS_24_BITS;
+  s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
   s_command.Address           = ReadAddr;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode          = QSPI_DATA_1_LINE;
@@ -234,7 +342,7 @@ uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size)
   s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
   s_command.Instruction       = QUAD_INPUT_PAGE_PROG_CMD;
   s_command.AddressMode       = QSPI_ADDRESS_1_LINE;
-  s_command.AddressSize       = QSPI_ADDRESS_24_BITS;
+  s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode          = QSPI_DATA_4_LINES;
   s_command.DummyCycles       = 0;
@@ -292,7 +400,7 @@ uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress)
   s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
   s_command.Instruction       = SECTOR_ERASE_CMD;
   s_command.AddressMode       = QSPI_ADDRESS_1_LINE;
-  s_command.AddressSize       = QSPI_ADDRESS_24_BITS;
+  s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
   s_command.Address           = BlockAddress;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DataMode          = QSPI_DATA_NONE;
@@ -431,7 +539,7 @@ uint8_t BSP_QSPI_GetInfo(QSPI_Info* pInfo)
 //  s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
 //  s_command.Instruction       = QUAD_INOUT_FAST_READ_CMD;
 //  s_command.AddressMode       = QSPI_ADDRESS_4_LINES;
-//  s_command.AddressSize       = QSPI_ADDRESS_24_BITS;
+//  s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
 //  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
 //  s_command.DataMode          = QSPI_DATA_4_LINES;
 //  s_command.DummyCycles       = W25Q128FV_DUMMY_CYCLES_READ_QUAD;
@@ -685,7 +793,7 @@ DRESULT TM_FATFS_FLASH_SPI_disk_ioctl(BYTE lun,BYTE cmd, void *buff)
 	  FLASH_DEBUG_FUNC();
 	switch (cmd) {
 		case GET_SECTOR_COUNT:
-			*(DWORD * )buff = 2560;	/* 扇区数量：2560*4096/1024/1024=10(MB) */
+			*(DWORD * )buff = 4096;	/* 扇区数量：2560*4096/1024/1024=10(MB) */
 		break;
 		case GET_SECTOR_SIZE :     /*获取扇区读写的大小（字）*/
 
@@ -703,30 +811,30 @@ DRESULT TM_FATFS_FLASH_SPI_disk_ioctl(BYTE lun,BYTE cmd, void *buff)
 }
 
 DRESULT TM_FATFS_FLASH_SPI_disk_read(
-										BYTE lun,//物理扇区，多个设备时用到(0...)
-										BYTE *buff,//数据缓存区 
-										DWORD sector, //扇区首地址
-										UINT count)//扇区个数(1..128)
+										BYTE lun,         // 物理扇区，多个设备时用到(0...)
+										BYTE *buff,       // 数据缓存区 
+										DWORD sector,     // 扇区首地址
+										UINT count)       // 扇区个数(1..128)
 {
 	FLASH_DEBUG_FUNC();
 	if ((TM_FATFS_FLASH_SPI_Stat & STA_NOINIT)) 
 	{
 		return RES_NOTRDY;
 	}
-	sector+=1536;//扇区偏移，外部Flash文件系统空间放在外部Flash后面6M空间
-	BSP_QSPI_Read(buff, sector <<12, count<<12);
+	sector+=4096;//扇区偏移，外部Flash文件系统空间放在外部Flash后面6M空间
+	BSP_QSPI_FastRead(buff, sector <<12, count<<12);
 	return RES_OK;
 }
 
 DRESULT TM_FATFS_FLASH_SPI_disk_write(
-										BYTE lun,//物理扇区，多个设备时用到(0...)
-										const BYTE *buff,//数据缓存区 
-										DWORD sector, //扇区首地址
-										UINT count)//扇区个数(1..128)
+										BYTE lun,            // 物理扇区，多个设备时用到(0...)
+										const BYTE *buff,    // 数据缓存区 
+										DWORD sector,        // 扇区首地址
+										UINT count)          // 扇区个数(1..128)
 {
 	uint32_t write_addr;  
 	FLASH_DEBUG_FUNC();
-	sector+=1536;//扇区偏移，外部Flash文件系统空间放在外部Flash后面4M空间
+	sector+=4096;//扇区偏移，外部Flash文件系统空间放在外部Flash后面4M空间
 	write_addr = sector<<12;    
 	BSP_QSPI_Erase_Block(write_addr);
 	BSP_QSPI_Write((uint8_t*)buff,write_addr,4096);

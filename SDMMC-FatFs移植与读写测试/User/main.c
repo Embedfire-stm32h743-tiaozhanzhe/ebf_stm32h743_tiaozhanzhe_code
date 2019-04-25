@@ -41,6 +41,7 @@ BYTE WriteBuffer[] =              /* Ð´»º³åÇø*/
 
 extern FATFS flash_fs;
 extern Diskio_drvTypeDef  SD_Driver;
+
 /**
   * @brief  CPU L1-Cache enable.
   * @param  None

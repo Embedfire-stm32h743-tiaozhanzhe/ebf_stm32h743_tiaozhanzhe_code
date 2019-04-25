@@ -5,7 +5,7 @@
 
 /*使用软件IIC，把SOFT_IIC宏设置为1，硬件IIC则设置为0
 !!使用硬件IIC时非常容易出现错误，不推荐*/
-#define SOFT_IIC      0
+#define SOFT_IIC      1
 
 /*设定使用的电容屏IIC设备地址*/
 #define GTP_ADDRESS            0xBA
@@ -16,7 +16,7 @@
 /*I2C引脚*/
 #define GTP_I2C                          I2C2
 #define GTP_I2C_CLK_ENABLE()             __HAL_RCC_I2C2_CLK_ENABLE()
-#define GTP_I2C_CLK_INIT				 RCC_APB1PeriphClockCmd	
+#define GTP_I2C_CLK_INIT				         RCC_APB1PeriphClockCmd	
 
 #define GTP_I2C_SCL_PIN                  GPIO_PIN_4                 
 #define GTP_I2C_SCL_GPIO_PORT            GPIOH                       
@@ -29,16 +29,16 @@
 #define GTP_I2C_SDA_AF                   GPIO_AF4_I2C2
 
 /*复位引脚*/
-#define GTP_RST_GPIO_PORT                GPIOD
-#define GTP_RST_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOD_CLK_ENABLE()
-#define GTP_RST_GPIO_PIN                 GPIO_PIN_11
+#define GTP_RST_GPIO_PORT                GPIOI
+#define GTP_RST_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOI_CLK_ENABLE()
+#define GTP_RST_GPIO_PIN                 GPIO_PIN_8
 /*中断引脚*/
-#define GTP_INT_GPIO_PORT                GPIOB
-#define GTP_INT_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOB_CLK_ENABLE()
-#define GTP_INT_GPIO_PIN                 GPIO_PIN_7
-#define GTP_INT_EXTI_IRQ                 EXTI9_5_IRQn
+#define GTP_INT_GPIO_PORT                GPIOD
+#define GTP_INT_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOD_CLK_ENABLE()
+#define GTP_INT_GPIO_PIN                 GPIO_PIN_13
+#define GTP_INT_EXTI_IRQ                 EXTI15_10_IRQn
 /*中断服务函数*/
-#define GTP_IRQHandler                   EXTI9_5_IRQHandler
+#define GTP_IRQHandler                   EXTI15_10_IRQHandler
 
 
 //软件IIC使用的宏

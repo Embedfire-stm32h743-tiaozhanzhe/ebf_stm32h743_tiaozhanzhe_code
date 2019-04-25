@@ -12,7 +12,8 @@
 //#define  sFLASH_ID                       0xEF3015     //W25X16
 //#define  sFLASH_ID                       0xEF4015	    //W25Q16
 //#define  sFLASH_ID                       0XEF4017     //W25Q64
-#define  sFLASH_ID                         0XEF4018     //W25Q128
+//#define  sFLASH_ID                         0XEF4018     //W25Q128
+#define  sFLASH_ID                         0XEF4019     //W25Q256
 
 /* QSPI Error codes */
 #define QSPI_OK            ((uint8_t)0x00)
@@ -95,10 +96,11 @@ typedef struct {
 /* Program Operations */
 #define PAGE_PROG_CMD                        0x02
 #define QUAD_INPUT_PAGE_PROG_CMD             0x32
+#define Enter_4Byte_Addr_Mode_CMD            0xB7
 
 
 /* Erase Operations */
-#define SECTOR_ERASE_CMD                     0x20
+#define SECTOR_ERASE_CMD                     0x20    //0xD8擦：64K    0x52擦：32K     0x20擦：4K   
 #define CHIP_ERASE_CMD                       0xC7
 
 #define PROG_ERASE_RESUME_CMD                0x7A
@@ -109,6 +111,8 @@ typedef struct {
 #define W25Q128FV_FSR_BUSY                    ((uint8_t)0x01)    /*!< busy */
 #define W25Q128FV_FSR_WREN                    ((uint8_t)0x02)    /*!< write enable */
 #define W25Q128FV_FSR_QE                      ((uint8_t)0x02)    /*!< quad enable */
+#define W25Q256FV_FSR_4ByteAddrMode           ((uint8_t)0x01)    /*!< 4字节地址模式 */
+
 /*命令定义-结尾*******************************/
 
 
@@ -141,16 +145,17 @@ typedef struct {
 #define QSPI_FLASH_BK1_IO3_CLK_ENABLE()    __HAL_RCC_GPIOF_CLK_ENABLE()
 #define QSPI_FLASH_BK1_IO3_AF              GPIO_AF9_QUADSPI
 
-#define QSPI_FLASH_CS_PIN                 GPIO_PIN_6               
-#define QSPI_FLASH_CS_GPIO_PORT           GPIOB                   
-#define QSPI_FLASH_CS_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOB_CLK_ENABLE()
-#define QSPI_FLASH_CS_GPIO_AF             GPIO_AF10_QUADSPI
+#define QSPI_FLASH_CS_PIN                  GPIO_PIN_10               
+#define QSPI_FLASH_CS_GPIO_PORT            GPIOB                   
+#define QSPI_FLASH_CS_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
+#define QSPI_FLASH_CS_GPIO_AF              GPIO_AF9_QUADSPI
 
 
 
 void QSPI_FLASH_Init(void);
 uint8_t BSP_QSPI_Init(void);
 uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress);
+uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);
 
@@ -174,7 +179,7 @@ uint8_t BSP_QSPI_GetStatus(void);
 //#define  sFLASH_ID                        0xEF3015     //W25X16
 //#define  sFLASH_ID                        0xEF4015	   //W25Q16
 //#define  sFLASH_ID                        0XEF4017     //W25Q64
-#define  sFLASH_ID                          0XEF4018     //W25Q128
+//#define  sFLASH_ID                          0XEF4018     //W25Q128
 
 /* Private typedef -----------------------------------------------------------*/
 //#define SPI_FLASH_PageSize                4096

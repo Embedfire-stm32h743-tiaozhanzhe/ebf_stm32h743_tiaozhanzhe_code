@@ -25,6 +25,7 @@
 void Delay(__IO uint32_t nCount); 
 
 void LCD_Test(void);
+
 /**
   * @brief  主函数
   * @param  无
@@ -92,9 +93,9 @@ void LCD_Test(void)
 	LCD_SetFont(&LCD_DEFAULT_FONT);
 
 	LCD_DisplayStringLine_EN_CH(1,(uint8_t* )"(野火5.0英寸液晶屏参数)");
-	LCD_DisplayStringLine_EN_CH(2,(uint8_t* )"分辨率:800x480 像素");
+	LCD_DisplayStringLine_EN_CH(2,(uint8_t* )"分分分辨率:800x480 像素");
 	LCD_DisplayStringLine_EN_CH(3,(uint8_t* )"触摸屏:5点电容触摸屏");
-	LCD_DisplayStringLine_EN_CH(4,(uint8_t* )"使用STM32-LTDC直接驱动,无需外部液晶驱动器");
+	LCD_DisplayStringLine_EN_CH(4,(uint8_t* )"使用STM32-LTDC直接驱动,无无无需外部液晶驱动器");
 	LCD_DisplayStringLine_EN_CH(5,(uint8_t* )"支持RGB888/565,24位数据总线");
 	LCD_DisplayStringLine_EN_CH(6,(uint8_t* )"触摸屏使用IIC总线驱动");
 

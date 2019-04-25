@@ -256,6 +256,7 @@ uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
 
 /**
   * @brief  从QSPI存储器中读取大量数据.
+  * @note   改指令只能使用在50MHz一下，本配置下不好用
   * @param  pData: 指向要读取的数据的指针
   * @param  ReadAddr: 读取起始地址
   * @param  Size: 要读取的数据大小    

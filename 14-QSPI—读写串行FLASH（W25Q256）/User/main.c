@@ -27,13 +27,13 @@ typedef enum { FAILED = 0, PASSED = !FAILED} TestStatus;
 #define countof(a)      (sizeof(a) / sizeof(*(a)))
 #define  BufferSize (countof(Tx_Buffer)-1)
 
-#define  FLASH_WriteAddress     (4096*4096)//
+#define  FLASH_WriteAddress     (0)//
 #define  FLASH_ReadAddress      FLASH_WriteAddress
 #define  FLASH_SectorToErase    FLASH_WriteAddress
 
    
 /* 发送缓冲区初始化 */
-uint8_t Tx_Buffer[] = "感谢您选用野火stm32开发板\r\nhttp://firestm32.taobao.com";
+uint8_t Tx_Buffer[4096] = "感谢您选用野火stm32开发板\r\nhttp://firestm32.taobao.com";
 uint8_t Rx_Buffer[BufferSize];
 
 //读取的ID存储位置

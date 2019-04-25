@@ -34,6 +34,7 @@
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx.h"
 #include "stm32h7xx_it.h"
+#include <stdio.h>
 
 /* USER CODE BEGIN 0 */
 
@@ -69,6 +70,7 @@ void HardFault_Handler(void)
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
+    printf("Hard Fault\n");
   }
   /* USER CODE BEGIN HardFault_IRQn 1 */
 

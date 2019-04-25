@@ -101,6 +101,8 @@
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
         <bEvRecOn>1</bEvRecOn>
+        <bSchkAxf>0</bSchkAxf>
+        <bTchkAxf>0</bTchkAxf>
         <nTsel>2</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
@@ -151,56 +153,7 @@
           <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32H7x_2048 -FS08000000 -FL0200000 -FP0($$Device:STM32H743IITx$CMSIS\Flash\STM32H7x_2048.FLM))</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>4170</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134250014</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>G:\Git_Project\STM32H7\1-HAL鈥斺€攅xample\鍒峰閮‵LASH绋嬪簭锛堝浣曟仮澶嶅嚭鍘傚唴瀹癸級\Project\User\FATFS\ff.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\SD_FatFs\../../User/FATFS/ff.c\4170</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>293</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134243982</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>G:\Git_Project\STM32H7\1-HAL鈥斺€攅xample\鍒峰閮‵LASH绋嬪簭锛堝浣曟仮澶嶅嚭鍘傚唴瀹癸級\Project\User\aux_data.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\SD_FatFs\../../User/aux_data.c\293</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>300</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134244008</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>G:\Git_Project\STM32H7\1-HAL鈥斺€攅xample\鍒峰閮‵LASH绋嬪簭锛堝浣曟仮澶嶅嚭鍘傚唴瀹癸級\Project\User\aux_data.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\SD_FatFs\../../User/aux_data.c\300</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -251,8 +204,13 @@
       <pszMrule></pszMrule>
       <pSingCmds></pSingCmds>
       <pMultCmds></pMultCmds>
+      <pMisraNamep></pMisraNamep>
+      <pszMrulep></pszMrulep>
+      <pSingCmdsp></pSingCmdsp>
+      <pMultCmdsp></pMultCmdsp>
       <DebugDescription>
         <Enable>1</Enable>
+        <EnableFlashSeq>0</EnableFlashSeq>
         <EnableLog>0</EnableLog>
         <Protocol>2</Protocol>
         <DbgClock>10000000</DbgClock>

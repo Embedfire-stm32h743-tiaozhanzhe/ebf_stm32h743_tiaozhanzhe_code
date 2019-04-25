@@ -1660,10 +1660,14 @@ char SDPath[4]; /* SD逻辑驱动器路径 */
 
 int GetGBKCode_from_sd ( uint8_t * pBuffer, uint16_t c)
 { 
-    unsigned char High8bit,Low8bit;
-    unsigned int pos;
+  unsigned char High8bit,Low8bit;
+  unsigned int pos;
+  uint32_t xC;
+  uint32_t err = 0;
+  uint32_t right = 0;
 		
 		static uint8_t everRead = 0;
+  static uint8_t everRead2 = 0;
 	
     High8bit= c >> 8;     /* 取高8位数据 */
     Low8bit= c & 0x00FF;  /* 取低8位数据 */
@@ -1709,7 +1713,7 @@ int GetGBKCode_from_sd ( uint8_t * pBuffer, uint16_t c)
         res_sd = f_read( &fnew, pBuffer, 24*24/8, &br );		 //24*24大小的汉字 其字模 占用24*24/8个字节
         
         f_close(&fnew);
-        
+
         return 0;  
     }    
     else

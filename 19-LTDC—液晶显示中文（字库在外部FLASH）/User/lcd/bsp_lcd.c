@@ -1627,8 +1627,8 @@ int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
 
 	/*GB2312 公式*/
 	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
-	BSP_QSPI_Read(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
-	//	  printf ( "%02x %02x %02x %02x\n", pBuffer[0],pBuffer[1],pBuffer[2],pBuffer[3]);
+	BSP_QSPI_FastRead(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
+//		  printf ( "%02x %02x %02x %02x\n", pBuffer[0],pBuffer[1],pBuffer[2],pBuffer[3]);
 
 	return 0;  
 

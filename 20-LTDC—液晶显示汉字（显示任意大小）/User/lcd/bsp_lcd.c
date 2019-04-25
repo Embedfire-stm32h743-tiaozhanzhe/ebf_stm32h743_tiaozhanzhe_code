@@ -235,7 +235,7 @@ void LCD_ClockConfig(void)
 	periph_clk_init_struct.PLL3.PLL3N = 270;
 	periph_clk_init_struct.PLL3.PLL3P = 2;
 	periph_clk_init_struct.PLL3.PLL3Q = 2;
-	periph_clk_init_struct.PLL3.PLL3R = 10;  
+	periph_clk_init_struct.PLL3.PLL3R = 12;  
 	HAL_RCCEx_PeriphCLKConfig(&periph_clk_init_struct);  
 }
 void LCD_Init(void)
@@ -1809,7 +1809,7 @@ int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
 
 	/*GB2312 公式*/
 	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
-	BSP_QSPI_Read(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
+	BSP_QSPI_FastRead(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
 	//	  printf ( "%02x %02x %02x %02x\n", pBuffer[0],pBuffer[1],pBuffer[2],pBuffer[3]);
 
 	return 0;  

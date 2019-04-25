@@ -155,6 +155,7 @@ typedef struct {
 void QSPI_FLASH_Init(void);
 uint8_t BSP_QSPI_Init(void);
 uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress);
+uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);
 

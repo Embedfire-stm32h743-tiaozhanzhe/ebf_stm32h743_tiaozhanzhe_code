@@ -241,7 +241,7 @@ FRESULT burn_file_sd2flash(Aux_Data_Typedef *dat,uint8_t file_num)
         
         for(j=0;j<bw;j++)
         {
-          if(tempbuf[i] != flash_buf[i])
+          if(tempbuf[j] != flash_buf[j])
           {
             BURN_ERROR("数据校验失败！");
             LED_RED;

@@ -227,6 +227,50 @@ static uint8_t QSPI_Addr_Mode_Init(void)
 }
 
 /**
+  * @brief  从QSPI存储器中读取大量数据.
+  * @param  pData: 指向要读取的数据的指针
+  * @param  ReadAddr: 读取起始地址
+  * @param  Size: 要读取的数据大小    
+  * @retval QSPI存储器状态
+  */
+uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
+{
+	QSPI_CommandTypeDef s_command;
+
+//  if(Size == 0)
+//  {
+//    BURN_DEBUG("BSP_QSPI_FastRead Size = 0");
+//    return QSPI_OK;
+//  }
+	/* 初始化读命令 */
+	s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+	s_command.Instruction       = QUAD_INOUT_FAST_READ_CMD;
+	s_command.AddressMode       = QSPI_ADDRESS_4_LINES;
+	s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
+	s_command.Address           = ReadAddr;
+	s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	s_command.DataMode          = QSPI_DATA_4_LINES;
+	s_command.DummyCycles       = 6;
+	s_command.NbData            = Size;
+	s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+	s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+	/* 配置命令 */
+	if (HAL_QSPI_Command(&QSPIHandle, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return QSPI_ERROR;
+	}
+
+	/* 接收数据 */
+	if (HAL_QSPI_Receive(&QSPIHandle, pData, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	{
+		return QSPI_ERROR;
+	}
+	return QSPI_OK;
+}
+
+/**
   * @brief  Reads an amount of data from the QSPI memory.
   * @param  pData: Pointer to data to be read
   * @param  ReadAddr: Read start address
