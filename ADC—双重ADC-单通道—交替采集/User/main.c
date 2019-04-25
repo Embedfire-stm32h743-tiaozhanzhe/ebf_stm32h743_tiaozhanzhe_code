@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   USART—USART1接发例程
+  * @brief   双重ADC-单通道-交替采集
   ******************************************************************
   * @attention
   *

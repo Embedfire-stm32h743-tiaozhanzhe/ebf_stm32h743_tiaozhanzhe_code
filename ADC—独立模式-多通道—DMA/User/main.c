@@ -4,11 +4,11 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   USART—USART1接发例程
+  * @brief   ADC-独立模式-多通道
   ******************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H743开发板 
+  * 实验平台:野火 STM32H743 开发板 
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
