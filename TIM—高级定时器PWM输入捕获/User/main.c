@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   USART—USART1接发例程
+  * @brief   高级定时器PWM输入捕获
   ******************************************************************
   * @attention
   *
