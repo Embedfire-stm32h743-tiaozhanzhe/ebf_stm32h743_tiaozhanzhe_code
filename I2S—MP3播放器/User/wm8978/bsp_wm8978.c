@@ -60,17 +60,20 @@ static uint16_t wm8978_RegCash[] = {
   * @retval 通信成功返回1，失败返回0
   */
 static uint8_t WM8978_I2C_WriteRegister(uint8_t RegisterAddr, uint16_t RegisterValue)
-{	
-	uint16_t tmp;
-
-	tmp  = (RegisterValue&0xff) << 8;
-	tmp |= ((RegisterAddr << 1) & 0xFE) | ((RegisterValue >> 8) & 0x1);
-	if(HAL_I2C_Master_Transmit(&I2C_Handle,WM8978_SLAVE_ADDRESS,(uint8_t *)&tmp,2,WM8978_I2C_FLAG_TIMEOUT)==HAL_OK)
+{	 
+  uint8_t tmp[2];
+  
+	tmp[0] = ((RegisterAddr << 1) & 0xFE) | ((RegisterValue >> 8) & 0x1);
+  tmp[1] = RegisterValue & 0xFF;
+  
+  if(HAL_I2C_Master_Transmit(&I2C_Handle, WM8978_SLAVE_ADDRESS, tmp, 2, WM8978_I2C_FLAG_TIMEOUT) == HAL_OK)
 	{
 		return 1; 
 	}
 	else 		
-	return 0;  
+  {
+    return 0;  
+  }
 }
 
 /**

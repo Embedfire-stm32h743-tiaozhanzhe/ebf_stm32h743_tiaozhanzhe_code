@@ -22,21 +22,21 @@ Purpose :
  
 /*引脚定义*/ 
 
-#define SENSORS_I2C_SCL_GPIO_PORT         		GPIOD
-#define SENSORS_I2C_SCL_GPIO_CLK_ENABLE()    	__GPIOD_CLK_ENABLE()
-#define SENSORS_I2C_SCL_GPIO_PIN         		  GPIO_PIN_12
+#define SENSORS_I2C_SCL_GPIO_PORT         		GPIOB
+#define SENSORS_I2C_SCL_GPIO_CLK_ENABLE()    	__GPIOB_CLK_ENABLE()
+#define SENSORS_I2C_SCL_GPIO_PIN         		  GPIO_PIN_6
  
-#define SENSORS_I2C_SDA_GPIO_PORT         		GPIOD
-#define SENSORS_I2C_SDA_GPIO_CLK_ENABLE()   	__GPIOD_CLK_ENABLE()
-#define SENSORS_I2C_SDA_GPIO_PIN          		GPIO_PIN_13
+#define SENSORS_I2C_SDA_GPIO_PORT         		GPIOB
+#define SENSORS_I2C_SDA_GPIO_CLK_ENABLE()   	__GPIOB_CLK_ENABLE()
+#define SENSORS_I2C_SDA_GPIO_PIN          		GPIO_PIN_7
 
-#define SENSORS_I2C_AF                    		GPIO_AF4_I2C4
+#define SENSORS_I2C_AF                    		GPIO_AF4_I2C1
 
-#define SENSORS_I2C              		  		  I2C4
-#define SENSORS_I2C_RCC_CLK_ENABLE()     		__HAL_RCC_I2C4_CLK_ENABLE()
+#define SENSORS_I2C              		  		  I2C1
+#define SENSORS_I2C_RCC_CLK_ENABLE()     		__HAL_RCC_I2C1_CLK_ENABLE()
 
-#define SENSORS_I2C_FORCE_RESET()      			__HAL_RCC_I2C4_FORCE_RESET()
-#define SENSORS_I2C_RELEASE_RESET()    			__HAL_RCC_I2C4_RELEASE_RESET()
+#define SENSORS_I2C_FORCE_RESET()      			__HAL_RCC_I2C1_FORCE_RESET()
+#define SENSORS_I2C_RELEASE_RESET()    			__HAL_RCC_I2C1_RELEASE_RESET()
 
 /*信息输出*/
 #define I2C_DEBUG_ON         1

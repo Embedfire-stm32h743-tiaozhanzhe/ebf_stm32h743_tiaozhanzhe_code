@@ -340,10 +340,10 @@ static void StartRecord(const char *filename)
 	/* 配置WM8978音频接口为飞利浦标准I2S接口，16bit */
 	wm8978_CfgAudioIF(I2S_STANDARD_PHILIPS, 16);
 
-  //I2Sx_Mode_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
+  I2Sx_Mode_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
 	I2Sxext_Mode_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
 	
-	//I2Sx_TX_DMA_Init((uint32_t)recplaybuf[0],(uint32_t)recplaybuf[1],1);
+	I2Sx_TX_DMA_Init((uint32_t)recplaybuf[0],(uint32_t)recplaybuf[1],1);
   
 	I2Sxext_RX_DMA_Init((uint32_t)buffer0,(uint32_t)buffer1,RECBUFFER_SIZE);
   

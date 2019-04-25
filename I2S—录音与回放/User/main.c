@@ -57,7 +57,7 @@ static void CPU_CACHE_Enable(void)
   SCB_EnableDCache();
 
   //将Cache设置write-through方式
-  //SCB->CACR|=1<<2;
+  SCB->CACR|=1<<2;
 }
 /**
   * @brief  主函数

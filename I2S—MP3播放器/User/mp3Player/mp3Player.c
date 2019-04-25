@@ -89,7 +89,7 @@ void mp3PlayerDemo(const char *mp3file)
 	Delay_ms(10);	/* 延迟一段时间，等待I2S中断结束 */
 	wm8978_Reset();		/* 复位WM8978到复位状态 */
 	/* 配置WM8978芯片，输入为DAC，输出为耳机 */
-	wm8978_CfgAudioPath(DAC_ON, EAR_LEFT_ON | EAR_RIGHT_ON);
+	wm8978_CfgAudioPath(DAC_ON, EAR_LEFT_ON | EAR_RIGHT_ON);    // SPK_ON
 
 	/* 调节音量，左右相同音量 */
 	wm8978_SetOUT1Volume(mp3player.ucVolume);
@@ -233,7 +233,6 @@ void mp3PlayerDemo(const char *mp3file)
 			if(led_delay==0xffffff)
 			{
 				led_delay=0;
-				LED4_TOGGLE;
 			}
 			//Input_scan();		//等待DMA传输完成，此间可以运行按键扫描及处理事件
 		}
