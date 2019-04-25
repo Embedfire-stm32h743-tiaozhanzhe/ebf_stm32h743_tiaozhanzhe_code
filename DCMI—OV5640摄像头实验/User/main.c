@@ -81,10 +81,10 @@ int main(void)
     LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
     LCD_DisplayStringLine_EN_CH(1,(uint8_t* )" 模式:UXGA 800x480");
     CAMERA_DEBUG("STM32H743 DCMI 驱动OV5640例程");
-
+    I2CMaster_Init();
     OV5640_HW_Init();			
     //初始化 I2C
-    I2CMaster_Init(); 
+    
     /* 读取摄像头芯片ID，确定摄像头正常连接 */
     OV5640_ReadID(&OV5640_Camera_ID);
 

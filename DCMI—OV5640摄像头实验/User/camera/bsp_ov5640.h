@@ -65,18 +65,18 @@ typedef enum
 
 /*摄像头接口 */
 //IIC SCCB
-#define CAMERA_I2C                          I2C4
-#define CAMERA_I2C_CLK_ENABLE()             __HAL_RCC_I2C4_CLK_ENABLE()
+#define CAMERA_I2C                          I2C1
+#define CAMERA_I2C_CLK_ENABLE()             __HAL_RCC_I2C1_CLK_ENABLE()
 
-#define CAMERA_I2C_SCL_PIN                  GPIO_PIN_12
-#define CAMERA_I2C_SCL_GPIO_PORT            GPIOD
-#define CAMERA_I2C_SCL_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOD_CLK_ENABLE()
-#define CAMERA_I2C_SCL_AF                   GPIO_AF4_I2C4
+#define CAMERA_I2C_SCL_PIN                  GPIO_PIN_6
+#define CAMERA_I2C_SCL_GPIO_PORT            GPIOB
+#define CAMERA_I2C_SCL_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
+#define CAMERA_I2C_SCL_AF                   GPIO_AF4_I2C1
 
-#define CAMERA_I2C_SDA_PIN                  GPIO_PIN_13
-#define CAMERA_I2C_SDA_GPIO_PORT            GPIOD
-#define CAMERA_I2C_SDA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOD_CLK_ENABLE()
-#define CAMERA_I2C_SDA_AF                   GPIO_AF4_I2C4
+#define CAMERA_I2C_SDA_PIN                  GPIO_PIN_7
+#define CAMERA_I2C_SDA_GPIO_PORT            GPIOB
+#define CAMERA_I2C_SDA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
+#define CAMERA_I2C_SDA_AF                   GPIO_AF4_I2C1
 
 //VSYNC
 #define DCMI_VSYNC_GPIO_PORT        	    GPIOI
@@ -99,9 +99,9 @@ typedef enum
 #define DCMI_PWDN_GPIO_PIN         	        GPIO_PIN_3
 
 //RST
-#define DCMI_RST_GPIO_PORT        	        GPIOG
-#define DCMI_RST_GPIO_CLK_ENABLE()          __HAL_RCC_GPIOG_CLK_ENABLE()
-#define DCMI_RST_GPIO_PIN         	        GPIO_PIN_2
+#define DCMI_RST_GPIO_PORT        	        GPIOB
+#define DCMI_RST_GPIO_CLK_ENABLE()          __HAL_RCC_GPIOB_CLK_ENABLE()
+#define DCMI_RST_GPIO_PIN         	        GPIO_PIN_5
 
 //数据信号线
 #define DCMI_D0_GPIO_PORT        	        GPIOH
