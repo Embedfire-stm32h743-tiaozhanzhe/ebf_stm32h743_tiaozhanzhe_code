@@ -4,7 +4,7 @@
   * @author  fire
   * @version V1.0
   * @date    2018-xx-xx
-  * @brief   GPIO输出--使用固件库点亮LED灯
+  * @brief   DHT11温湿度传感器实验
   ******************************************************************
   * @attention
   *
@@ -77,7 +77,7 @@ int main(void)
   
 	DHT11_GPIO_Config();
 	
-	printf("\r\n***秉火STM32H743 dht11 温湿度传感器实验***\r\n");
+	printf("\r\n***野火STM32H743 dht11 温湿度传感器实验***\r\n");
 	
   while(1)
 	{
@@ -86,6 +86,7 @@ int main(void)
 		{
       /*使用c标准库把变量转化成字符串*/
       sprintf(dispBuff,"Hum:%d.%d RH, Temp:%d.%d  C",DHT11_Data.humi_int,DHT11_Data.humi_deci,DHT11_Data.temp_int,DHT11_Data.temp_deci);
+      printf("\r\n %s\r\n", dispBuff);
       LCD_ClearLine(7);
       /*设置字体颜色及字体的背景颜色(此处的背景不是指LCD的背景层！注意区分)*/
       LCD_SetColors(LCD_COLOR_WHITE,LCD_COLOR_BLACK);
@@ -98,13 +99,14 @@ int main(void)
 		else
 		{
 		  sprintf(dispBuff,"Read DHT11 ERROR!");
+      printf("Read DHT11 ERROR!");
       LCD_ClearLine(7);
       /*设置字体颜色及字体的背景颜色(此处的背景不是指LCD的背景层！注意区分)*/
       LCD_SetColors(LCD_COLOR_WHITE,LCD_COLOR_BLACK);
       /*然后显示该字符串即可，其它变量也是这样处理*/
       LCD_DisplayStringLine_EN_CH(7,(uint8_t* )dispBuff);      
 		}
-    Delay_ms(1000);
+    Delay_ms(1500);
 	} 
 }
 
