@@ -102,7 +102,7 @@ void QSPI_FLASH_Init(void)
 uint8_t BSP_QSPI_Init(void)
 { 
 	QSPI_CommandTypeDef s_command;
-	uint8_t value = W25Q128FV_FSR_QE;
+	uint8_t value = W25Q256JV_FSR_QE;
 	
 	/* QSPI存储器复位 */
 	if (QSPI_ResetMemory() != QSPI_OK)
@@ -137,7 +137,7 @@ uint8_t BSP_QSPI_Init(void)
 		return QSPI_ERROR;
 	}
 	/* 自动轮询模式等待存储器就绪 */  
-	if (QSPI_AutoPollingMemReady(W25Q128FV_SUBSECTOR_ERASE_MAX_TIME) != QSPI_OK)
+	if (QSPI_AutoPollingMemReady(W25Q256JV_SUBSECTOR_ERASE_MAX_TIME) != QSPI_OK)
 	{
 		return QSPI_ERROR;
 	}
@@ -198,7 +198,7 @@ uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size)
 
 	while (current_addr <= WriteAddr)
 	{
-		current_addr += W25Q128FV_PAGE_SIZE;
+		current_addr += W25Q256JV_PAGE_SIZE;
 	}
 	current_size = current_addr - WriteAddr;
 
@@ -257,7 +257,7 @@ uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size)
 		/* 更新下一页编程的地址和大小变量 */
 		current_addr += current_size;
 		pData += current_size;
-		current_size = ((current_addr + W25Q128FV_PAGE_SIZE) > end_addr) ? (end_addr - current_addr) : W25Q128FV_PAGE_SIZE;
+		current_size = ((current_addr + W25Q256JV_PAGE_SIZE) > end_addr) ? (end_addr - current_addr) : W25Q256JV_PAGE_SIZE;
 	} while (current_addr < end_addr);
 	return QSPI_OK;
 }
@@ -296,7 +296,7 @@ uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress)
 	}
 
 	/* 配置自动轮询模式等待擦除结束 */  
-	if (QSPI_AutoPollingMemReady(W25Q128FV_SUBSECTOR_ERASE_MAX_TIME) != QSPI_OK)
+	if (QSPI_AutoPollingMemReady(W25Q256JV_SUBSECTOR_ERASE_MAX_TIME) != QSPI_OK)
 	{
 		return QSPI_ERROR;
 	}
@@ -332,7 +332,7 @@ uint8_t BSP_QSPI_Erase_Chip(void)
 		return QSPI_ERROR;
 	} 
 	/* 配置自动轮询模式等待擦除结束 */  
-	if (QSPI_AutoPollingMemReady(W25Q128FV_BULK_ERASE_MAX_TIME) != QSPI_OK)
+	if (QSPI_AutoPollingMemReady(W25Q256JV_BULK_ERASE_MAX_TIME) != QSPI_OK)
 	{
 		return QSPI_ERROR;
 	}
@@ -370,7 +370,7 @@ uint8_t BSP_QSPI_GetStatus(void)
 		return QSPI_ERROR;
 	} 
 	/* 检查寄存器的值 */
-	if((reg & W25Q128FV_FSR_BUSY) != 0)
+	if((reg & W25Q256JV_FSR_BUSY) != 0)
 	{
 		return QSPI_BUSY;
 	}
@@ -388,11 +388,11 @@ uint8_t BSP_QSPI_GetStatus(void)
 uint8_t BSP_QSPI_GetInfo(QSPI_Info* pInfo)
 {
 	/* 配置存储器配置结构 */
-	pInfo->FlashSize          = W25Q128FV_FLASH_SIZE;
-	pInfo->EraseSectorSize    = W25Q128FV_SUBSECTOR_SIZE;
-	pInfo->EraseSectorsNumber = (W25Q128FV_FLASH_SIZE/W25Q128FV_SUBSECTOR_SIZE);
-	pInfo->ProgPageSize       = W25Q128FV_PAGE_SIZE;
-	pInfo->ProgPagesNumber    = (W25Q128FV_FLASH_SIZE/W25Q128FV_PAGE_SIZE);
+	pInfo->FlashSize          = W25Q256JV_FLASH_SIZE;
+	pInfo->EraseSectorSize    = W25Q256JV_SUBSECTOR_SIZE;
+	pInfo->EraseSectorsNumber = (W25Q256JV_FLASH_SIZE/W25Q256JV_SUBSECTOR_SIZE);
+	pInfo->ProgPageSize       = W25Q256JV_PAGE_SIZE;
+	pInfo->ProgPagesNumber    = (W25Q256JV_FLASH_SIZE/W25Q256JV_PAGE_SIZE);
 	return QSPI_OK;
 }
 
@@ -462,8 +462,8 @@ static uint8_t QSPI_WriteEnable()
 	}
 
 	/* 配置自动轮询模式等待写启用 */  
-	s_config.Match           = W25Q128FV_FSR_WREN;
-	s_config.Mask            = W25Q128FV_FSR_WREN;
+	s_config.Match           = W25Q256JV_FSR_WREN;
+	s_config.Mask            = W25Q256JV_FSR_WREN;
 	s_config.MatchMode       = QSPI_MATCH_MODE_AND;
 	s_config.StatusBytesSize = 1;
 	s_config.Interval        = 0x10;
@@ -502,7 +502,7 @@ static uint8_t QSPI_AutoPollingMemReady(uint32_t Timeout)
 	s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
 
 	s_config.Match           = 0x00;
-	s_config.Mask            = W25Q128FV_FSR_BUSY;
+	s_config.Mask            = W25Q256JV_FSR_BUSY;
 	s_config.MatchMode       = QSPI_MATCH_MODE_AND;
 	s_config.StatusBytesSize = 1;
 	s_config.Interval        = 0x10;
