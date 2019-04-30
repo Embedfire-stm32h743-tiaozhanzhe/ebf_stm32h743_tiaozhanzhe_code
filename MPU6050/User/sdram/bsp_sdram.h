@@ -6,7 +6,8 @@
 
 
 
-#define SDRAM_SIZE 0x4000000  //64M字节,两片W9825G6KH-6,32MB@16bit组成64M@32bit
+//#define W9812G6JH_SIZE 0x1000000  //16M字节
+#define IS42S16400J_SIZE (32*1024*1024)  //32M字节，W9825G6
 
 /*SDRAM 的bank选择*/  
 #define FMC_BANK_SDRAM            FMC_Bank2_SDRAM  
@@ -20,9 +21,8 @@
 /**
   * @brief  FMC SDRAM 数据宽度
   */  
-/* #define SDRAM_MEMORY_WIDTH   FMC_SDRAM_MEM_BUS_WIDTH_8  */
-/* #define SDRAM_MEMORY_WIDTH   FMC_SDRAM_MEM_BUS_WIDTH_16  */
-#define SDRAM_MEMORY_WIDTH    FMC_SDRAM_MEM_BUS_WIDTH_32 
+/* #define SDRAM_MEMORY_WIDTH   FMC_SDMemory_Width_8b  */
+#define SDRAM_MEMORY_WIDTH    FMC_SDRAM_MEM_BUS_WIDTH_16 
 
 /**
   * @brief  FMC SDRAM CAS Latency
@@ -39,7 +39,7 @@
 /**
   * @brief  FMC SDRAM 突发读取特性
   */  
-/* #define SDRAM_READBURST    FMC_SDRAM_RBURST_DISABLE*/ 
+//#define SDRAM_READBURST    FMC_SDRAM_RBURST_DISABLE
 #define SDRAM_READBURST    FMC_Read_Burst_Enable  
   
 
@@ -129,6 +129,7 @@
 #define FMC_A12_GPIO_PORT        GPIOG
 #define FMC_A12_GPIO_CLK()       __GPIOG_CLK_ENABLE()
 #define FMC_A12_GPIO_PIN         GPIO_PIN_2
+
 /*数据信号线*/
 #define FMC_D0_GPIO_PORT         GPIOD
 #define FMC_D0_GPIO_CLK()        __GPIOD_CLK_ENABLE()
@@ -194,70 +195,6 @@
 #define FMC_D15_GPIO_CLK()       __GPIOD_CLK_ENABLE()
 #define FMC_D15_GPIO_PIN         GPIO_PIN_10
 
-#define FMC_D16_GPIO_PORT         GPIOH
-#define FMC_D16_GPIO_CLK()        __GPIOH_CLK_ENABLE()
-#define FMC_D16_GPIO_PIN          GPIO_PIN_8
-
-#define FMC_D17_GPIO_PORT         GPIOH
-#define FMC_D17_GPIO_CLK()        __GPIOH_CLK_ENABLE()
-#define FMC_D17_GPIO_PIN          GPIO_PIN_9
-
-#define FMC_D18_GPIO_PORT         GPIOH
-#define FMC_D18_GPIO_CLK()        __GPIOH_CLK_ENABLE()
-#define FMC_D18_GPIO_PIN          GPIO_PIN_10
-
-#define FMC_D19_GPIO_PORT         GPIOH
-#define FMC_D19_GPIO_CLK()        __GPIOH_CLK_ENABLE()
-#define FMC_D19_GPIO_PIN          GPIO_PIN_11
-
-#define FMC_D20_GPIO_PORT         GPIOH
-#define FMC_D20_GPIO_CLK()        __GPIOH_CLK_ENABLE()
-#define FMC_D20_GPIO_PIN          GPIO_PIN_12
-
-#define FMC_D21_GPIO_PORT         GPIOH
-#define FMC_D21_GPIO_CLK()        __GPIOH_CLK_ENABLE()
-#define FMC_D21_GPIO_PIN          GPIO_PIN_13
-
-#define FMC_D22_GPIO_PORT         GPIOH
-#define FMC_D22_GPIO_CLK()        __GPIOH_CLK_ENABLE()
-#define FMC_D22_GPIO_PIN          GPIO_PIN_14
-
-#define FMC_D23_GPIO_PORT         GPIOH
-#define FMC_D23_GPIO_CLK()        __GPIOH_CLK_ENABLE()
-#define FMC_D23_GPIO_PIN          GPIO_PIN_15
-
-#define FMC_D24_GPIO_PORT         GPIOI
-#define FMC_D24_GPIO_CLK()        __GPIOI_CLK_ENABLE()
-#define FMC_D24_GPIO_PIN          GPIO_PIN_0
-
-#define FMC_D25_GPIO_PORT         GPIOI
-#define FMC_D25_GPIO_CLK()        __GPIOI_CLK_ENABLE()
-#define FMC_D25_GPIO_PIN          GPIO_PIN_1
-
-#define FMC_D26_GPIO_PORT        GPIOI
-#define FMC_D26_GPIO_CLK()       __GPIOI_CLK_ENABLE()
-#define FMC_D26_GPIO_PIN         GPIO_PIN_2
-
-#define FMC_D27_GPIO_PORT        GPIOI
-#define FMC_D27_GPIO_CLK()       __GPIOI_CLK_ENABLE()
-#define FMC_D27_GPIO_PIN         GPIO_PIN_3
-
-#define FMC_D28_GPIO_PORT        GPIOI
-#define FMC_D28_GPIO_CLK()       __GPIOI_CLK_ENABLE()
-#define FMC_D28_GPIO_PIN         GPIO_PIN_6
-
-#define FMC_D29_GPIO_PORT        GPIOI
-#define FMC_D29_GPIO_CLK()       __GPIOI_CLK_ENABLE()
-#define FMC_D29_GPIO_PIN         GPIO_PIN_7
-
-#define FMC_D30_GPIO_PORT        GPIOI
-#define FMC_D30_GPIO_CLK()       __GPIOI_CLK_ENABLE()
-#define FMC_D30_GPIO_PIN         GPIO_PIN_9
-
-#define FMC_D31_GPIO_PORT        GPIOI
-#define FMC_D31_GPIO_CLK()       __GPIOI_CLK_ENABLE()
-#define FMC_D31_GPIO_PIN         GPIO_PIN_10
-
 /*控制信号线*/  
 #define FMC_CS_GPIO_PORT         GPIOH
 #define FMC_CS_GPIO_CLK()        __GPIOH_CLK_ENABLE()
@@ -300,14 +237,6 @@
 #define FMC_LDQM_GPIO_CLK()       __GPIOE_CLK_ENABLE()
 #define FMC_LDQM_GPIO_PIN         GPIO_PIN_0
 
-/*UDQM2 LDQM2*/
-#define FMC_UDQM2_GPIO_PORT        GPIOI
-#define FMC_UDQM2_GPIO_CLK()       __GPIOI_CLK_ENABLE()
-#define FMC_UDQM2_GPIO_PIN         GPIO_PIN_5
-
-#define FMC_LDQM2_GPIO_PORT       GPIOI
-#define FMC_LDQM2_GPIO_CLK()      __GPIOI_CLK_ENABLE()
-#define FMC_LDQM2_GPIO_PIN        GPIO_PIN_4
 /** @defgroup STM32429 SDRAM函数
   * @{
   */ 
