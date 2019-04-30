@@ -39,6 +39,7 @@ int main(void)
   HAL_Init();        
   /* 配置系统时钟为400 MHz */ 
   SystemClock_Config();
+  LED_GPIO_Config();
   /* 初始化内核延时 */
   HAL_InitTick(5);
   /*初始化USART 配置模式为 115200 8-N-1，中断接收*/
@@ -81,6 +82,7 @@ int main(void)
     if (IntStatus >> 1 & 0x1)
       printf("PS 产生中断\n");
     
+    LED2_TOGGLE;
     HAL_Delay(200);
   }
 }
