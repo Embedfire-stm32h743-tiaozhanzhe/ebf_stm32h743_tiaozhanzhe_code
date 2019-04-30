@@ -143,7 +143,7 @@ void _485_SendString(  uint8_t *str)
 
 //中断缓存串口数据
 #define UART_BUFF_SIZE      1024
-volatile    uint16_t uart_p = 1;
+volatile    uint16_t uart_p = 0;
 uint8_t     uart_buff[UART_BUFF_SIZE];
 
 void bsp_485_IRQHandler(void)
