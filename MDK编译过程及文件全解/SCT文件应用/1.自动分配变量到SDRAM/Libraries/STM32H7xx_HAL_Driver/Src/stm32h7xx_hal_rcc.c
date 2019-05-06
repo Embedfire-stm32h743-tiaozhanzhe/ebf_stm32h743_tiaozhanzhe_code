@@ -902,7 +902,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
   SystemCoreClock = HAL_RCC_GetSysClockFreq() >> D1CorePrescTable[(RCC->D1CFGR & RCC_D1CFGR_D1CPRE)>> POSITION_VAL(RCC_D1CFGR_D1CPRE_0)];
   
   /* Configure the source of time base considering new system clocks settings*/
-  HAL_InitTick (TICK_INT_PRIORITY);
+//  HAL_InitTick (TICK_INT_PRIORITY);
 
   return HAL_OK;
 }

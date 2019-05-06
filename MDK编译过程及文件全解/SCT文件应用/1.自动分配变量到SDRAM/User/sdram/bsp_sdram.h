@@ -245,5 +245,6 @@ void  SDRAM_WriteBuffer(uint32_t* pBuffer, uint32_t uwWriteAddress, uint32_t uwB
 void  SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBufferSize);
 uint8_t SDRAM_Test(void);
 
+void SystemClock_Config(void);
 
 #endif /* __SDRAM_H */

@@ -245,8 +245,15 @@ Reset_Handler    PROC
         IMPORT  SystemInit
         IMPORT  __main
 
+        ;从外部文件引入声明
+        IMPORT SDRAM_Init
+          
                  LDR     R0, =SystemInit
                  BLX     R0
+                 
+                 LDR     R0, =SDRAM_Init
+                 BLX     R0
+                 
                  LDR     R0, =__main
                  BX      R0
                  ENDP
