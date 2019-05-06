@@ -262,7 +262,6 @@ static void SDRAM_InitSequence(void)
   */
 void SDRAM_Init(void)
 {
-
   FMC_SDRAM_TimingTypeDef SdramTiming;
 	RCC_PeriphCLKInitTypeDef RCC_PeriphClkInit;
 	
@@ -270,9 +269,6 @@ void SDRAM_Init(void)
 //  SystemClock_Config();
   /* 配置FMC接口相关的 GPIO*/
   SDRAM_GPIO_Config();
-
-    /* 使能 FMC 时钟 */
-  __FMC_CLK_ENABLE();
   
 	/* 配置SDRAM时钟源*/
   RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FMC;
