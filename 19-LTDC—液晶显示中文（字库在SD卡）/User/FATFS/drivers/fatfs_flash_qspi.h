@@ -23,7 +23,7 @@
 
 
 
-/* W25Q128FV Micron memory */
+/* W25Q256JV Micron memory */
 /* Size of the flash */
 #define QSPI_FLASH_SIZE            23     /* Address bus width to access whole memory space */
 #define QSPI_PAGE_SIZE             256
@@ -40,22 +40,22 @@ typedef struct {
 /* Private define ------------------------------------------------------------*/
 /*命令定义-开头*******************************/
 /** 
-  * @brief  W25Q128FV Configuration  
+  * @brief  W25Q256JV Configuration  
   */  
-#define W25Q128FV_FLASH_SIZE                  0x1000000 /* 128 MBits => 16MBytes */
-#define W25Q128FV_SECTOR_SIZE                 0x10000   /* 256 sectors of 64KBytes */
-#define W25Q128FV_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
-#define W25Q128FV_PAGE_SIZE                   0x100     /* 65536 pages of 256 bytes */
+#define W25Q256JV_FLASH_SIZE                  0x1000000 /* 128 MBits => 16MBytes */
+#define W25Q256JV_SECTOR_SIZE                 0x10000   /* 256 sectors of 64KBytes */
+#define W25Q256JV_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
+#define W25Q256JV_PAGE_SIZE                   0x100     /* 65536 pages of 256 bytes */
 
-#define W25Q128FV_DUMMY_CYCLES_READ           4
-#define W25Q128FV_DUMMY_CYCLES_READ_QUAD      10
+#define W25Q256JV_DUMMY_CYCLES_READ           4
+#define W25Q256JV_DUMMY_CYCLES_READ_QUAD      10
 
-#define W25Q128FV_BULK_ERASE_MAX_TIME         250000
-#define W25Q128FV_SECTOR_ERASE_MAX_TIME       3000
-#define W25Q128FV_SUBSECTOR_ERASE_MAX_TIME    800
+#define W25Q256JV_BULK_ERASE_MAX_TIME         250000
+#define W25Q256JV_SECTOR_ERASE_MAX_TIME       3000
+#define W25Q256JV_SUBSECTOR_ERASE_MAX_TIME    800
 
 /** 
-  * @brief  W25Q128FV Commands  
+  * @brief  W25Q256JV Commands  
   */  
 /* Reset Operations */
 #define RESET_ENABLE_CMD                     0x66
@@ -106,9 +106,9 @@ typedef struct {
 
 
 /* Flag Status Register */
-#define W25Q128FV_FSR_BUSY                    ((uint8_t)0x01)    /*!< busy */
-#define W25Q128FV_FSR_WREN                    ((uint8_t)0x02)    /*!< write enable */
-#define W25Q128FV_FSR_QE                      ((uint8_t)0x02)    /*!< quad enable */
+#define W25Q256JV_FSR_BUSY                    ((uint8_t)0x01)    /*!< busy */
+#define W25Q256JV_FSR_WREN                    ((uint8_t)0x02)    /*!< write enable */
+#define W25Q256JV_FSR_QE                      ((uint8_t)0x02)    /*!< quad enable */
 /*命令定义-结尾*******************************/
 
 

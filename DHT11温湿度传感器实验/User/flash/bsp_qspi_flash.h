@@ -8,7 +8,8 @@
 //#define  sFLASH_ID                       0xEF3015     //W25X16
 //#define  sFLASH_ID                       0xEF4015	    //W25Q16
 //#define  sFLASH_ID                       0XEF4017     //W25Q64
-#define  sFLASH_ID                         0XEF4018     //W25Q128
+//#define  sFLASH_ID                         0XEF4018     //W25Q128
+#define  sFLASH_ID                         0XEF4019     //W25Q256
 
 /* QSPI Error codes */
 #define QSPI_OK            ((uint8_t)0x00)
@@ -18,7 +19,7 @@
 #define QSPI_SUSPENDED     ((uint8_t)0x08)
 
 
-/* W25Q128FV Micron memory */
+/* W25Q256JV Micron memory */
 /* Size of the flash */
 #define QSPI_FLASH_SIZE            23     /* 地址总线宽度访问整个内存空间 */
 #define QSPI_PAGE_SIZE             256
@@ -35,22 +36,22 @@ typedef struct {
 /* Private define ------------------------------------------------------------*/
 /*命令定义-开头*******************************/
 /** 
-  * @brief  W25Q128FV配置 
+  * @brief  W25Q256JV配置 
   */  
-#define W25Q128FV_FLASH_SIZE                  0x1000000 /* 128 MBits => 16MBytes */
-#define W25Q128FV_SECTOR_SIZE                 0x10000   /* 256 sectors of 64KBytes */
-#define W25Q128FV_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
-#define W25Q128FV_PAGE_SIZE                   0x100     /* 65536 pages of 256 bytes */
+#define W25Q256JV_FLASH_SIZE                  0x1000000 /* 128 MBits => 16MBytes */
+#define W25Q256JV_SECTOR_SIZE                 0x10000   /* 256 sectors of 64KBytes */
+#define W25Q256JV_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
+#define W25Q256JV_PAGE_SIZE                   0x100     /* 65536 pages of 256 bytes */
 
-#define W25Q128FV_DUMMY_CYCLES_READ           4
-#define W25Q128FV_DUMMY_CYCLES_READ_QUAD      10
+#define W25Q256JV_DUMMY_CYCLES_READ           4
+#define W25Q256JV_DUMMY_CYCLES_READ_QUAD      10
 
-#define W25Q128FV_BULK_ERASE_MAX_TIME         250000
-#define W25Q128FV_SECTOR_ERASE_MAX_TIME       3000
-#define W25Q128FV_SUBSECTOR_ERASE_MAX_TIME    800
+#define W25Q256JV_BULK_ERASE_MAX_TIME         250000
+#define W25Q256JV_SECTOR_ERASE_MAX_TIME       3000
+#define W25Q256JV_SUBSECTOR_ERASE_MAX_TIME    800
 
 /** 
-  * @brief  W25Q128FV 指令  
+  * @brief  W25Q256JV 指令  
   */  
 /* 复位操作 */
 #define RESET_ENABLE_CMD                     0x66
@@ -91,9 +92,10 @@ typedef struct {
 #define PAGE_PROG_CMD                        0x02
 #define QUAD_INPUT_PAGE_PROG_CMD             0x32
 #define EXT_QUAD_IN_FAST_PROG_CMD            0x12
+#define Enter_4Byte_Addr_Mode_CMD            0xB7
 
 /* 擦除操作 */
-#define SECTOR_ERASE_CMD                     0x20
+#define SECTOR_ERASE_CMD                     0x20    //0xD8擦：64K    0x52擦：32K     0x20擦：4K   
 #define CHIP_ERASE_CMD                       0xC7
 
 #define PROG_ERASE_RESUME_CMD                0x7A
@@ -101,9 +103,11 @@ typedef struct {
 
 
 /* 状态寄存器标志 */
-#define W25Q128FV_FSR_BUSY                    ((uint8_t)0x01)    /*!< busy */
-#define W25Q128FV_FSR_WREN                    ((uint8_t)0x02)    /*!< write enable */
-#define W25Q128FV_FSR_QE                      ((uint8_t)0x02)    /*!< quad enable */
+#define W25Q256JV_FSR_BUSY                    ((uint8_t)0x01)    /*!< busy */
+#define W25Q256JV_FSR_WREN                    ((uint8_t)0x02)    /*!< write enable */
+#define W25Q256JV_FSR_QE                      ((uint8_t)0x02)    /*!< quad enable */
+#define W25Q256FV_FSR_4ByteAddrMode           ((uint8_t)0x01)    /*!< 4字节地址模式 */
+
 /*命令定义-结尾*******************************/
 
 
@@ -136,16 +140,17 @@ typedef struct {
 #define QSPI_FLASH_BK1_IO3_CLK_ENABLE()    __GPIOF_CLK_ENABLE()
 #define QSPI_FLASH_BK1_IO3_AF              GPIO_AF9_QUADSPI
 
-#define QSPI_FLASH_CS_PIN                 GPIO_PIN_6               
+#define QSPI_FLASH_CS_PIN                 GPIO_PIN_10              
 #define QSPI_FLASH_CS_GPIO_PORT           GPIOB                   
 #define QSPI_FLASH_CS_GPIO_CLK_ENABLE()   __GPIOB_CLK_ENABLE()
-#define QSPI_FLASH_CS_GPIO_AF             GPIO_AF10_QUADSPI
+#define QSPI_FLASH_CS_GPIO_AF             GPIO_AF9_QUADSPI
 
 
 
 void QSPI_FLASH_Init(void);
 uint8_t BSP_QSPI_Init(void);
 uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress);
+uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);
 
