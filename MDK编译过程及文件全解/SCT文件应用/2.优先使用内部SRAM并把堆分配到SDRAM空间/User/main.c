@@ -13,7 +13,8 @@
   * 淘宝    :http://firestm32.taobao.com
   *
   ******************************************************************
-  */  
+  */ 
+#include <stdlib.h>  
 #include "stm32h7xx.h"
 #include "main.h"
 #include "./led/bsp_led.h" 
@@ -22,132 +23,81 @@
 #include "./delay/core_delay.h" 
 void Delay(__IO uint32_t nCount); 
 
-void SDRAM_Check(void);
-uint32_t RadomBuffer[10000];
+//设置变量定义到“EXRAM”节区的宏
+#define __EXRAM  __attribute__ ((section ("EXRAM")))
+//定义变量到SDRAM
+uint32_t testValue __EXRAM =7 ;
+//上述语句等效于：
+//uint32_t testValue  __attribute__ ((section ("EXRAM"))) =7 ;
 
-uint32_t ReadBuffer[10000];
+//定义变量到SRAM
+uint32_t testValue2  =7 ;
 
-#define SDRAM_SIZE (IS42S16400J_SIZE/4)
+//定义数组到SDRAM
+uint8_t testGrup[3] __EXRAM ={1,2,3};
+//定义数组到SRAM
+uint8_t testGrup2[3] ={1,2,3};
 
-uint32_t *pSDRAM;
 
-long long count=0,sdram_count=0;
-RNG_HandleTypeDef hrng;
 /**
   * @brief  主函数
   * @param  无
   * @retval 无
   */
 int main(void)
-{   
-	
-	/* 系统时钟初始化成400MHz */
-	SystemClock_Config();
-
-	LED_GPIO_Config();
-	/* 配置串口1为：115200 8-N-1 */
-	UARTx_Config();	
-	
-	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
-
-	printf("\r\n野火STM32H743 SDRAM 读写测试例程\r\n");
-		
-	/*初始化SDRAM模块*/
-	SDRAM_Init();
-	/*蓝灯亮，表示正在读写SDRAM测试*/
-	LED_BLUE;
-
-//  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FMC;
-//  PeriphClkInitStruct.PLL2.PLL2M = 5;
-//  PeriphClkInitStruct.PLL2.PLL2N = 144;
-//  PeriphClkInitStruct.PLL2.PLL2P = 2;
-//  PeriphClkInitStruct.PLL2.PLL2Q = 2;
-//  PeriphClkInitStruct.PLL2.PLL2R = 3;
-//  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
-//  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
-//  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
-//  PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
-//  
-//  HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
-  /*使能RNG时钟*/
-  __HAL_RCC_RNG_CLK_ENABLE();
-	/*初始化RNG模块产生随机数*/
-  
-	hrng.Instance = RNG;
-	HAL_RNG_Init(&hrng);
-
-	printf("开始生成10000个SDRAM测试随机数\r\n");  
-  
-	for(count=0;count<10000;count++)
-	{
-			HAL_RNG_GenerateRandomNumber(&hrng,&RadomBuffer[count]);
-
-	}  
-  
-	printf("10000个SDRAM测试随机数生成完毕\r\n");
-  
-  RadomBuffer[6145] = 94561;
-  RadomBuffer[1000] = 35165;
-  RadomBuffer[0] = 465;
-  
-	SDRAM_Check();
-
-	while(1)
-	{
-		
-	}		
-}
-
-void SDRAM_Check(void)
 {
-  pSDRAM=(uint32_t*)SDRAM_BANK_ADDR;
-	count=0;
-	printf("开始写入SDRAM\r\n");
-	for(sdram_count=0;sdram_count<SDRAM_SIZE;sdram_count++)
-	{
-		*pSDRAM=RadomBuffer[count];
-		count++;
-		pSDRAM++;
-		if(count>=10000)
+  uint32_t inerTestValue =10;
+  uint32_t * pointer;
+  
+  /* 系统时钟初始化成400 MHz */
+  SystemClock_Config();
+  
+  /* LED 端口初始化 */
+  LED_GPIO_Config();   
+    
+  /* 初始化串口 */
+  UARTx_Config();
+  
+  printf("\r\nSCT文件应用——自动分配变量到SDRAM实验\r\n");
 
-		{
-			count=0;
-		}
-	}
-	printf("写入总字节数:%d\r\n",(uint32_t)pSDRAM-SDRAM_BANK_ADDR);
+  printf("\r\n使用“ uint32_t inerTestValue =10; ”语句定义的局部变量：\r\n");
+  printf("结果：它的地址为：0x%x,变量值为：%d\r\n",(uint32_t)&inerTestValue,inerTestValue);
 
-	count=0;
-	pSDRAM=(uint32_t*)SDRAM_BANK_ADDR;
-	printf("开始读取SDRAM并与原随机数比较\r\n");
-	sdram_count=0;
-	for(;sdram_count<SDRAM_SIZE;sdram_count++)
-	{
-		if(*pSDRAM != RadomBuffer[count])
-		{
-			printf("数据比较错误——退出~\r\n");
-			break;
-		}
-		count++;
-		pSDRAM++;
-		if(count>=10000)
-		{
-			count=0;
-		}
-	}
+  printf("\r\n使用“uint32_t testValue  =7 ;”语句定义的全局变量：\r\n");
+  printf("结果：它的地址为：0x%x,变量值为：%d\r\n",(uint32_t)&testValue,testValue);
 
-	printf("比较通过总字节数:%d\r\n",(uint32_t)pSDRAM-SDRAM_BANK_ADDR);
+  printf("\r\n使用“uint32_t testValue2  =0 ; ”语句定义的全局变量：\r\n");
+  printf("结果：它的地址为：0x%x,变量值为：%d\r\n",(uint32_t)&testValue2,testValue2); 
 
-	if(sdram_count == SDRAM_SIZE)
-	{
-		LED_GREEN;
-		printf("SDRAM测试成功\r\n");
-	}
-	else
-	{
-		LED_RED;
-		printf("SDRAM测试失败\r\n");
-	}   
-}
+  printf("\r\n使用“uint8_t testGrup[100]  ={0};”语句定义的全局数组：\r\n");
+  printf("结果：它的地址为：0x%x,变量值为：%d,%d,%d\r\n",(uint32_t)&testGrup,testGrup[0],testGrup[1],testGrup[2]);
+
+  printf("\r\n使用“uint8_t testGrup2[100] ={1,2,3};”语句定义的全局数组：\r\n");
+  printf("结果：它的地址为：0x%x,变量值为：%d，%d,%d\r\n",(uint32_t)&testGrup2,testGrup2[0],testGrup2[1],testGrup2[2]);
+
+  pointer = (uint32_t*)malloc(sizeof(uint32_t)*3); 
+  if(pointer != NULL)
+  {
+    *(pointer)=1;
+    *(++pointer)=2;
+    *(++pointer)=3; 
+
+    printf("\r\n使用“ uint32_t *pointer = (uint32_t*)malloc(sizeof(uint32_t)*3); ”动态分配的变量\r\n");
+    printf("\r\n定义后的操作为：\r\n*(pointer++)=1;\r\n*(pointer++)=2;\r\n*pointer=3;");
+    printf("\r\n结果：操作后它的地址为：0x%x,查看变量值操作：\r\n",(uint32_t)pointer); 
+    printf("*(pointer--)=%d, \r\n",*(pointer--));
+    printf("*(pointer--)=%d, \r\n",*(pointer--));
+    printf("*(pointer)=%d, \r\n",*(pointer));
+  }
+  else
+  {
+    printf("\r\n使用malloc动态分配变量出错！！！\r\n");  
+  }
+  /*绿灯亮*/
+  LED_BLUE; 
+  while(1);
+}  
+
 
 /**
   * @brief  System Clock 配置
@@ -171,7 +121,7 @@ void SDRAM_Check(void)
   * @param  None
   * @retval None
   */
-static void SystemClock_Config(void)
+void SystemClock_Config(void)
 {
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_OscInitTypeDef RCC_OscInitStruct;
