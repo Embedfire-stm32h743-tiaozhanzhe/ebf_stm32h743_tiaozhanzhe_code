@@ -16,7 +16,7 @@
   */
   
 #include "./sdram/bsp_sdram.h"  
-static FMC_SDRAM_CommandTypeDef Command;
+//static FMC_SDRAM_CommandTypeDef Command;
 SDRAM_HandleTypeDef hsdram1;
 #define sdramHandle hsdram1
 /**
@@ -39,154 +39,50 @@ static void SDRAM_delay(__IO uint32_t nCount)
   */
 static void SDRAM_GPIO_Config(void)
 {		
-	GPIO_InitTypeDef GPIO_InitStructure;
+	///使能GPIO口时钟
+  RCC->AHB4ENR |= 0x1FC; 
+
+  //配置端口C、D、E、F、G、H相应的引脚为复用推挽输出
+  GPIOC->MODER = 0xFFFFFFFE;
+  GPIOC->OTYPER = 0;
+  GPIOC->OSPEEDR = 0x00000003;
+  GPIOC->PUPDR = 0x00000001;
+  GPIOC->AFR[0] = 0x0000000C;
   
-	/* 使能SDRAM相关的IO时钟 */
-	/*地址信号线*/
-	FMC_A0_GPIO_CLK();FMC_A1_GPIO_CLK(); FMC_A2_GPIO_CLK();
-	FMC_A3_GPIO_CLK();FMC_A4_GPIO_CLK(); FMC_A5_GPIO_CLK();
-	FMC_A6_GPIO_CLK();FMC_A7_GPIO_CLK(); FMC_A8_GPIO_CLK();
-	FMC_A9_GPIO_CLK();FMC_A10_GPIO_CLK();FMC_A11_GPIO_CLK();
-  FMC_A12_GPIO_CLK();
-	/*数据信号线*/
-	FMC_D0_GPIO_CLK(); FMC_D1_GPIO_CLK() ; FMC_D2_GPIO_CLK() ; 
-	FMC_D3_GPIO_CLK(); FMC_D4_GPIO_CLK() ; FMC_D5_GPIO_CLK() ;
-	FMC_D6_GPIO_CLK(); FMC_D7_GPIO_CLK() ; FMC_D8_GPIO_CLK() ;
-	FMC_D9_GPIO_CLK(); FMC_D10_GPIO_CLK(); FMC_D11_GPIO_CLK();
-	FMC_D12_GPIO_CLK();FMC_D13_GPIO_CLK(); FMC_D14_GPIO_CLK();
-	FMC_D15_GPIO_CLK();  
-	/*控制信号线*/
-	FMC_CS_GPIO_CLK() ; FMC_BA0_GPIO_CLK(); FMC_BA1_GPIO_CLK() ;
-	FMC_WE_GPIO_CLK() ; FMC_RAS_GPIO_CLK(); FMC_CAS_GPIO_CLK();
-	FMC_CLK_GPIO_CLK(); FMC_CKE_GPIO_CLK(); FMC_UDQM_GPIO_CLK();
-	FMC_LDQM_GPIO_CLK();
+  GPIOD->MODER = 0xAFEAFFFA;
+  GPIOD->OTYPER = 0;
+  GPIOD->OSPEEDR = 0xF03F000F;
+  GPIOD->PUPDR = 0x50150005;
+  GPIOD->AFR[0] = 0x000000CC;  
+  GPIOD->AFR[1] = 0xCC000CCC;
+
+  GPIOE->MODER = 0xAAAABFFA;
+  GPIOE->OTYPER = 0;
+  GPIOE->OSPEEDR = 0xFFFFC00F;
+  GPIOE->PUPDR = 0x55554005;
+  GPIOE->AFR[0] = 0xC00000CC;  
+  GPIOE->AFR[1] = 0xCCCCCCCC;
   
-	/*-- SDRAM IO 配置 -----------------------------------------------------*/     
-	GPIO_InitStructure.Mode      = GPIO_MODE_AF_PP;//配置为复用功能
-	GPIO_InitStructure.Pull      = GPIO_PULLUP;
-	GPIO_InitStructure.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-	GPIO_InitStructure.Alternate = GPIO_AF12_FMC;
-
-	/*地址信号线 针对引脚配置*/
-	GPIO_InitStructure.Pin = FMC_A0_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A0_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A1_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A1_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A2_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A2_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A3_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A3_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A4_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A4_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A5_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A5_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A6_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A6_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A7_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A7_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A8_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A8_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A9_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A9_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A10_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A10_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A11_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A11_GPIO_PORT, &GPIO_InitStructure);
+  GPIOF->MODER = 0xAABFFAAA;
+  GPIOF->OTYPER = 0;
+  GPIOF->OSPEEDR = 0xFFC00FFF;
+  GPIOF->PUPDR = 0x55400555;
+  GPIOF->AFR[0] = 0x00CCCCCC;
+  GPIOF->AFR[1] = 0xCCCCC000;
   
-  GPIO_InitStructure.Pin = FMC_A12_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A12_GPIO_PORT, &GPIO_InitStructure);
+  GPIOG->MODER = 0xBFFEFAEA;
+  GPIOG->OTYPER = 0;
+  GPIOG->OSPEEDR = 0xC0030F3F;
+  GPIOG->PUPDR = 0x40010515;
+  GPIOG->AFR[0] = 0x00CC0CCC;  
+  GPIOG->AFR[1] = 0xC000000C;
 
-	/*数据信号线 针对引脚配置*/
-	GPIO_InitStructure.Pin = FMC_D0_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D0_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D1_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D1_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D2_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D2_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D3_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D3_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D4_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D4_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D5_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D5_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D6_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D6_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D7_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D7_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D8_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D8_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D9_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D9_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D10_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D10_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D11_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D11_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D12_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D12_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D13_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D13_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D14_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D14_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_D15_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_D15_GPIO_PORT, &GPIO_InitStructure);
-
-	/*控制信号线*/
-	GPIO_InitStructure.Pin = FMC_CS_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_CS_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_BA0_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_BA0_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_BA1_GPIO_PIN;
-	HAL_GPIO_Init(FMC_BA1_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_WE_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_WE_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_RAS_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_RAS_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_CAS_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_CAS_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_CLK_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_CLK_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_CKE_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_CKE_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_UDQM_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_UDQM_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_LDQM_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_LDQM_GPIO_PORT, &GPIO_InitStructure);
-		
+  GPIOH->MODER = 0xAAAAAFFF;
+  GPIOH->OTYPER = 0;
+  GPIOH->OSPEEDR = 0xFFFFF000;
+  GPIOH->PUPDR = 0x55555000;
+  GPIOH->AFR[0] = 0xCC000000;  
+  GPIOH->AFR[1] = 0xCCCCCCCC;
 }
 
 /**
@@ -196,61 +92,23 @@ static void SDRAM_GPIO_Config(void)
   */
 static void SDRAM_InitSequence(void)
 {
-	uint32_t tmpr = 0;
-
 	/* Step 1 ----------------------------------------------------------------*/
 	/* 配置命令：开启提供给SDRAM的时钟 */
-	Command.CommandMode = FMC_SDRAM_CMD_CLK_ENABLE;
-	Command.CommandTarget = FMC_COMMAND_TARGET_BANK;
-	Command.AutoRefreshNumber = 1;
-	Command.ModeRegisterDefinition = 0;
-	/* 发送配置命令 */
-	HAL_SDRAM_SendCommand(&sdramHandle, &Command, SDRAM_TIMEOUT);
-
+  FMC_Bank5_6->SDCMR = 0x00000009;
 	/* Step 2: 延时100us */ 
 	SDRAM_delay(1);
-
 	/* Step 3 ----------------------------------------------------------------*/
-	/* 配置命令：对所有的bank预充电 */ 
-	Command.CommandMode = FMC_SDRAM_CMD_PALL;
-	Command.CommandTarget = FMC_COMMAND_TARGET_BANK;
-	Command.AutoRefreshNumber = 1;
-	Command.ModeRegisterDefinition = 0;
-	/* 发送配置命令 */
-	HAL_SDRAM_SendCommand(&sdramHandle, &Command, SDRAM_TIMEOUT);   
-
+	/* 配置命令：对所有的bank预充电 */  
+  FMC_Bank5_6->SDCMR = 0x0000000A;
 	/* Step 4 ----------------------------------------------------------------*/
 	/* 配置命令：自动刷新 */   
-	Command.CommandMode = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
-	Command.CommandTarget = FMC_COMMAND_TARGET_BANK;
-	Command.AutoRefreshNumber = 4;
-	Command.ModeRegisterDefinition = 0;
-	/* 发送配置命令 */
-	HAL_SDRAM_SendCommand(&sdramHandle, &Command, SDRAM_TIMEOUT);
-
+  FMC_Bank5_6->SDCMR = 0x000000EB;
 	/* Step 5 ----------------------------------------------------------------*/
 	/* 设置sdram寄存器配置 */
-	tmpr = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_1          |
-				   SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   |
-				   SDRAM_MODEREG_CAS_LATENCY_3           |
-				   SDRAM_MODEREG_OPERATING_MODE_STANDARD |
-				   SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;
-
-	/* 配置命令：设置SDRAM寄存器 */
-	Command.CommandMode = FMC_SDRAM_CMD_LOAD_MODE;
-	Command.CommandTarget = FMC_COMMAND_TARGET_BANK;
-	Command.AutoRefreshNumber = 1;
-	Command.ModeRegisterDefinition = tmpr;
-	/* 发送配置命令 */
-	HAL_SDRAM_SendCommand(&sdramHandle, &Command, SDRAM_TIMEOUT);
-
+  FMC_Bank5_6->SDCMR = 0x0004600C;
 	/* Step 6 ----------------------------------------------------------------*/
-
-	/* 设置刷新计数器 */
-	/* 刷新周期=64ms/4096行=15.625us */
-	/* COUNT=(15.625us x Freq) - 20 */
-	/* 设置自刷新速率 */
-	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 1855); 
+  /* 设置自刷新速率 */
+  FMC_Bank5_6->SDRTR |= (1855<<1);
 }
 
 
@@ -263,53 +121,39 @@ static void SDRAM_InitSequence(void)
 void SDRAM_Init(void)
 {
 
-  FMC_SDRAM_TimingTypeDef SdramTiming;
-	RCC_PeriphCLKInitTypeDef RCC_PeriphClkInit;
-	
   /* 配置FMC接口相关的 GPIO*/
   SDRAM_GPIO_Config();
+  
+  //使能HSE
+  RCC->CR |= RCC_CR_HSEON;
+  while(!(RCC->CR&(1<<17)));
+  //选择HSE作为PLL时钟源
+  RCC->PLLCKSELR |= (1 << 1);
+  //使能PLL2R
+  RCC->PLLCKSELR |= (25 << 12);//PLL2M
+  RCC->PLLCFGR |= (1 << 21); 
+  RCC->PLLCFGR &= ~(3 << 6);
+  RCC->PLLCFGR &= ~(1 << 5);
+  RCC->PLLCFGR &= ~(1 << 4);
+  RCC->PLL2DIVR |= (265 << 0);//PLL2N
+  RCC->PLL2DIVR |= (2 << 9);//PLL2P
+  RCC->PLL2DIVR |= (2 << 16);//PLL2Q
+  RCC->PLL2DIVR |= (2 << 24);//PLL2R
 
-	/* 配置SDRAM时钟源*/
-  RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FMC;
-  RCC_PeriphClkInit.PLL2.PLL2M = 5;
-  RCC_PeriphClkInit.PLL2.PLL2N = 144;
-  RCC_PeriphClkInit.PLL2.PLL2P = 2;
-  RCC_PeriphClkInit.PLL2.PLL2Q = 2;
-  RCC_PeriphClkInit.PLL2.PLL2R = 3;
-  RCC_PeriphClkInit.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
-  RCC_PeriphClkInit.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
-  RCC_PeriphClkInit.PLL2.PLL2FRACN = 0;
-  RCC_PeriphClkInit.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
-  if (HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit) != HAL_OK)
-  {
-    while(1);
-  }
-  /* 使能 FMC 时钟 */
-  __FMC_CLK_ENABLE();
-
-  /*执行SDRAM1的内存初始化序列 */
-  hsdram1.Instance = FMC_SDRAM_DEVICE;
-  /* hsdram1结构体初始化*/
-  hsdram1.Init.SDBank = FMC_SDRAM_BANK2;
-  hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_9;       // SDRAM 列数
-  hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_13;            // SDRAM 行数
-  hsdram1.Init.MemoryDataWidth = SDRAM_MEMORY_WIDTH;                 // 总线数据宽度为 16 位
-  hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;    // 4 个扇区
-  hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3;                 // 列地址选通信延时
-  hsdram1.Init.WriteProtection = FMC_SDRAM_WRITE_PROTECTION_DISABLE; // 禁止写保护
-  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2;             // SDRAM 时钟 133MHz
-  hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_ENABLE;                  // 使能突发传输模式
-  hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_1;              // 读通道延时
-  /* SDRAM时序 */
-  SdramTiming.LoadToActiveDelay = 2;       // 加载模式寄存器命令与行有效或刷新命令之间的延迟
-  SdramTiming.ExitSelfRefreshDelay = 8;    // 退出自我刷新到行有效命令之间的延迟
-  SdramTiming.SelfRefreshTime = 5;         // 行有效与预充电命令之间的延迟
-  SdramTiming.RowCycleDelay = 8;           // 两个刷新命令或两个行有效命令之间的延迟
-  SdramTiming.WriteRecoveryTime = 2;       // 写入命令到预充电命令之间的延迟
-  SdramTiming.RPDelay = 2;                 // 预充电与行有效命令之间的延迟
-  SdramTiming.RCDDelay = 2;                // 行有效与列读写命令之间的延迟
-
-  HAL_SDRAM_Init(&hsdram1, &SdramTiming);  
+  //使能PLL2
+  RCC->CR |= (1 << 26);
+  while(!(RCC->CR&(1<<27)));
+  RCC->D1CCIPR |= (2<<0); 
+  
+  (RCC->AHB3ENR |= (RCC_AHB3ENR_FMCEN));
+  
+  FMC_Bank5_6->SDCR[FMC_SDRAM_BANK1] = 0x00003AD0;
+  FMC_Bank5_6->SDCR[FMC_SDRAM_BANK2] = 0x000001D9;
+  
+  FMC_Bank5_6->SDTR[FMC_SDRAM_BANK1] = 0x0F1F7FFF;
+  FMC_Bank5_6->SDTR[FMC_SDRAM_BANK2] = 0x01010471;
+  
+  __FMC_ENABLE();                      
   /* FMC SDRAM 设备时序初始化 */
   SDRAM_InitSequence(); 
   
