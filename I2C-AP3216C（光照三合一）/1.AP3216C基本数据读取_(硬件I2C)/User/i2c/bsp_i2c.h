@@ -8,6 +8,9 @@ extern I2C_HandleTypeDef  I2C_Handle;
 /* 这个地址只要与STM32外挂的I2C器件地址不一样即可 */
 #define I2C_OWN_ADDRESS7      0X0A   
 
+#define I2Cx_FLAG_TIMEOUT             ((uint32_t) 1000) //0x1100
+#define I2Cx_LONG_TIMEOUT             ((uint32_t) (300 * I2Cx_FLAG_TIMEOUT)) //was300
+
 #define I2Cx                             I2C1
 #define I2Cx_CLK_ENABLE()                __HAL_RCC_I2C1_CLK_ENABLE()
 #define I2Cx_SDA_GPIO_CLK_ENABLE()       __HAL_RCC_GPIOB_CLK_ENABLE()
@@ -37,5 +40,13 @@ extern I2C_HandleTypeDef  I2C_Handle;
 /* 函数声明 */
 
 void I2C_Mode_Config(void);
+int Sensors_I2C_ReadRegister(unsigned char slave_addr,
+                                       unsigned char reg_addr,
+                                       unsigned short len, 
+                                       unsigned char *data_ptr);
+int Sensors_I2C_WriteRegister(unsigned char slave_addr,
+                                        unsigned char reg_addr,
+                                        unsigned short len, 
+                                        unsigned char *data_ptr);
 
 #endif /* __I2C_H */

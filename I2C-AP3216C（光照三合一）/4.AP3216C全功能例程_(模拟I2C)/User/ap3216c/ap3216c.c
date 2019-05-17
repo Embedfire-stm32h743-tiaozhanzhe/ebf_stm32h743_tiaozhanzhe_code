@@ -56,13 +56,13 @@
 #define AP3216C_PS_THRESHOLD_HIGH_L_REG 0x2C //bit 1:0
 #define AP3216C_PS_THRESHOLD_HIGH_H_REG 0x2D //bit 9:2
 
-#define AP3216C_ADDR 0x1e /*0x3c=0x1e<<1*/ // AP3216C 的 7 位地址
+//#define AP3216C_ADDR 0x1e /*0x3c=0x1e<<1*/ // AP3216C 的 7 位地址
 
 /* 写寄存器的值 */
 static void write_reg(uint8_t reg, uint8_t data)
 {
   
-  HAL_I2C_Mem_Write(&I2C_Handle, AP3216C_ADDR << 1, reg, I2C_MEMADD_SIZE_8BIT, &data, 1, 100);
+  Sensor_write(reg, data);
   
 }
 
@@ -70,7 +70,7 @@ static void write_reg(uint8_t reg, uint8_t data)
 static void read_regs(uint8_t reg, uint8_t len, uint8_t *buf)
 {
   
-  HAL_I2C_Mem_Read(&I2C_Handle, AP3216C_ADDR << 1, reg, I2C_MEMADD_SIZE_8BIT, buf, len, 100);
+  Sensor_Read(reg, buf, len);
   
 }
 
@@ -175,13 +175,13 @@ static void ap3216c_int_init(void)
 { 
     ap3216c_threshold_t threshold;    // 设置报警值阈值结构体
   
-    threshold.min = 100;     // 光照下限产生报警
+    threshold.min = 10;     // 光照下限产生报警
     threshold.max = 1000;    // 光照上限产生报警
     threshold.noises_time = 1;    // ALS 达到阈值后持续 threshold.noises_time * 4 个周期后开始报警， threshold.noises_time 最大为； 15
     set_als_threshold(AP3216C_ALS_LOW_THRESHOLD_L, threshold);    // 设置 ALS 的报警值
   
   
-    threshold.min = 120;    // PS 低于 200 产生报警
+    threshold.min = 240;    // PS 低于 200 产生报警
     threshold.max = 600;    // PS 高于 500 产生报警
     set_ps_threshold(AP3216C_PS_LOW_THRESHOLD_L, threshold);     // 设置 PS 的报警值
 }
@@ -218,7 +218,7 @@ void AP_INT_Config(void)
  */
 void ap3216c_init(void)
 {
-    I2C_Mode_Config();
+    I2C_Init();
 
     /* reset ap3216c */
     reset_sensor();

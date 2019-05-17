@@ -31,14 +31,16 @@
 int main(void)
 {
   /**/
-  float ALS;
-  uint16_t PS;
-  uint16_t IR;
-  uint8_t IntStatus;
+  static uint16_t ALS_RAW;
+  static uint16_t PS_RAW;
+  static uint16_t IR_RAW;
+  
+  float ALSValue;
   
   HAL_Init();        
   /* 配置系统时钟为400 MHz */ 
   SystemClock_Config();
+  
   LED_GPIO_Config();
   /* 初始化内核延时 */
   HAL_InitTick(5);
@@ -46,44 +48,24 @@ int main(void)
   UARTx_Config();
   
   printf("\r\n 欢迎使用野火 STM32 H743 开发板。\r\n");	
-  printf("\r\n 这是一个三合一光照传感器测试例程 \r\n");
+  printf("\r\n 这是一个三合一光照传感器基础数据读取例程 \r\n");
   
   printf(" 芯片初始化中.....\n");
   /* 初始化 光照传感器 */
-  ap3216c_init();
+  AP3216C_Init();
 
   while(1)    
   {
-    IntStatus = ap3216c_get_IntStatus();    // 先读状态位，读ADC数据位会清除状态位（默认设置）
-    ALS = ap3216c_read_ambient_light();
-    PS = ap3216c_read_ps_data();
-    IR = ap3216c_read_ir_data();
-
-    printf("\n光照强度是：%.2fLux\n红外强度是：%d\n", ALS, IR);
-
-    if (PS == 55555)    // IR 太强 PS 数据无效
-      printf("IR 太强 PS 数据无效\n");
-    else
-    {
-      printf("接近距离是：%d\n", PS & 0x3FF);
-    }
-    
-    if (AP_INT_Read() == 0)
-      printf("有中断产生\n");
-    
-    if ((PS >> 15) & 1)
-      printf("物体接近\n");
-    else
-      printf("物体远离\n");
-    
-    if (IntStatus & 0x1)
-      printf("ALS 产生中断\n");
-    
-    if (IntStatus >> 1 & 0x1)
-      printf("PS 产生中断\n");
+    AP3216CReadALS(&ALS_RAW);
+    AP3216CReadPS(&PS_RAW);
+    AP3216CReadIR(&IR_RAW);
+    ALSValue = ALS_RAW * 0.36;// Lux = 16 bit ALS data * Resolution
+    printf("环境光：%.2flux ",ALSValue);
+    printf("接近值：%d ",PS_RAW);
+    printf("红外光：%d\r\n",IR_RAW);
     
     LED2_TOGGLE;
-    HAL_Delay(200);
+    HAL_Delay(225);//最小采样间隔225ms
   }
 }
 

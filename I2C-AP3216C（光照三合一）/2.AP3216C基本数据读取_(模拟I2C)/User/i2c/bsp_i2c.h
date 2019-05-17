@@ -3,39 +3,51 @@
 
 #include "stm32h7xx.h"
 		
-extern I2C_HandleTypeDef  I2C_Handle;
+/*设定的AP3216C IIC设备地址*/
+#define AP3216C_ADDR              0x3C
 
-/* 这个地址只要与STM32外挂的I2C器件地址不一样即可 */
-#define I2C_OWN_ADDRESS7      0X0A   
+#define I2CT_FLAG_TIMEOUT         ((uint32_t)0x1000)
+#define I2CT_LONG_TIMEOUT         ((uint32_t)(10 * I2CT_FLAG_TIMEOUT))
 
-#define I2Cx                             I2C1
-#define I2Cx_CLK_ENABLE()                __HAL_RCC_I2C1_CLK_ENABLE()
-#define I2Cx_SDA_GPIO_CLK_ENABLE()       __HAL_RCC_GPIOB_CLK_ENABLE()
-#define I2Cx_SCL_GPIO_CLK_ENABLE()       __HAL_RCC_GPIOB_CLK_ENABLE() 
+/*I2C引脚*/
+#define AP3216C_I2C_SCL_PIN                  GPIO_PIN_6                 
+#define AP3216C_I2C_SCL_GPIO_PORT            GPIOB                       
+#define AP3216C_I2C_SCL_GPIO_CLK_ENABLE()    __GPIOB_CLK_ENABLE()
 
-#define I2Cx_FORCE_RESET()               __HAL_RCC_I2C1_FORCE_RESET()
-#define I2Cx_RELEASE_RESET()             __HAL_RCC_I2C1_RELEASE_RESET()
+#define AP3216C_I2C_SDA_PIN                  GPIO_PIN_7                 
+#define AP3216C_I2C_SDA_GPIO_PORT            GPIOB                    
+#define AP3216C_I2C_SDA_GPIO_CLK_ENABLE()    __GPIOB_CLK_ENABLE()
 
-/* Definition for I2Cx Pins */
-#define I2Cx_SCL_PIN                    GPIO_PIN_6
-#define I2Cx_SCL_GPIO_PORT              GPIOB
-#define I2Cx_SCL_AF                     GPIO_AF4_I2C1
-#define I2Cx_SDA_PIN                    GPIO_PIN_7
-#define I2Cx_SDA_GPIO_PORT              GPIOB
-#define I2Cx_SDA_AF                     GPIO_AF4_I2C1
+//软件IIC使用的宏
+#define I2C_SCL_1()  HAL_GPIO_WritePin(AP3216C_I2C_SCL_GPIO_PORT, AP3216C_I2C_SCL_PIN,GPIO_PIN_SET)		/* SCL = 1 */
+#define I2C_SCL_0()  HAL_GPIO_WritePin(AP3216C_I2C_SCL_GPIO_PORT, AP3216C_I2C_SCL_PIN,GPIO_PIN_RESET)		/* SCL = 0 */
+
+#define I2C_SDA_1()  HAL_GPIO_WritePin(AP3216C_I2C_SDA_GPIO_PORT, AP3216C_I2C_SDA_PIN,GPIO_PIN_SET)		/* SDA = 1 */
+#define I2C_SDA_0()  HAL_GPIO_WritePin(AP3216C_I2C_SDA_GPIO_PORT, AP3216C_I2C_SDA_PIN,GPIO_PIN_RESET)		/* SDA = 0 */
+
+#define I2C_SDA_READ()  HAL_GPIO_ReadPin(AP3216C_I2C_SDA_GPIO_PORT, AP3216C_I2C_SDA_PIN)	/* 读SDA口线状态 */
 
 /*信息输出*/
-#define EEPROM_DEBUG_ON         0
+#define I2C_DEBUG_ON         1
+#define I2C_DEBUG_FUNC_ON    0
 
-#define EEPROM_INFO(fmt,arg...)           printf("<<-EEPROM-INFO->> "fmt"\n",##arg)
-#define EEPROM_ERROR(fmt,arg...)          printf("<<-EEPROM-ERROR->> "fmt"\n",##arg)
-#define EEPROM_DEBUG(fmt,arg...)          do{\
-                                          if(EEPROM_DEBUG_ON)\
-                                          printf("<<-EEPROM-DEBUG->> [%d]"fmt"\n",__LINE__, ##arg);\
+#define I2C_INFO(fmt,arg...)           printf("<<-I2C-INFO->> "fmt"\n",##arg)
+#define I2C_ERROR(fmt,arg...)          printf("<<-I2C-ERROR->> "fmt"\n",##arg)
+#define I2C_DEBUG(fmt,arg...)          do{\
+                                          if(I2C_DEBUG_ON)\
+                                          printf("<<-I2C-DEBUG->> [%d]"fmt"\n",__LINE__, ##arg);\
                                           }while(0)
 
-/* 函数声明 */
+#define I2C_DEBUG_FUNC()               do{\
+                                         if(I2C_DEBUG_FUNC_ON)\
+                                         printf("<<-I2C-FUNC->> Func:%s@Line:%d\n",__func__,__LINE__);\
+                                       }while(0)
 
-void I2C_Mode_Config(void);
+//函数接口
+void I2C_Init(void);
+uint32_t I2C_WriteBytes(uint8_t ClientAddr,uint8_t* pBuffer,  uint8_t NumByteToWrite);
+uint32_t I2C_ReadBytes(uint8_t ClientAddr,uint8_t* pBuffer, uint16_t NumByteToRead);
+uint32_t Sensor_write(uint8_t reg_add,uint8_t reg_dat);
+uint32_t Sensor_Read(uint8_t reg_add,unsigned char* Read,uint8_t num); 
 
-#endif /* __I2C_H */
+#endif /* __BSP_I2C */
