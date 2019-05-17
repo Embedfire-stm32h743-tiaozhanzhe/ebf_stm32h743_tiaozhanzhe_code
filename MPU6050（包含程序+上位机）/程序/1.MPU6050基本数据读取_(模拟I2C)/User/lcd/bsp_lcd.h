@@ -3,7 +3,7 @@
 
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f7xx.h"
+#include "stm32h7xx.h"
 #include "./sdram/bsp_sdram.h"
 #include "./fonts/fonts.h"
 

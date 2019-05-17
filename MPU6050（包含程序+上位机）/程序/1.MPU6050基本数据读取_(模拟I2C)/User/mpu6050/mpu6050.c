@@ -1,7 +1,7 @@
 #include "./mpu6050/mpu6050.h"
-#include "./usart/bsp_debug_usart.h"
-#include "./i2c/bsp_i2c.h"
-#include "stm32f7xx_hal.h"
+#include "./usart/bsp_usart.h"
+#include "./i2c/i2c.h"
+#include "stm32h7xx_hal.h"
 
 #define MPU_ERROR 		I2C_ERROR
 #define MPU_INFO 		I2C_INFO

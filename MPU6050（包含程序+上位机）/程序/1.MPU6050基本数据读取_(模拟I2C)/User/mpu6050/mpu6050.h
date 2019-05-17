@@ -1,6 +1,6 @@
 #ifndef __MPU6050_H
 #define __MPU6050_H
-#include "stm32f7xx.h"
+#include "stm32h7xx.h"
 
 // MPU6050, Standard address 0x68
 #define MPU6050_ADDRESS         0xD0

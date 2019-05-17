@@ -8,8 +8,8 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32F767 开发板  
-  * 论坛    :http://www.firebbs.cn
+  * 实验平台:野火  STM32 H743 开发板  
+  * 论坛    :http://www.chuxue123.com
   * 淘宝    :http://firestm32.taobao.com
   *
   ******************************************************************************
@@ -47,24 +47,24 @@ static void SDRAM_GPIO_Config(void)
 	FMC_A3_GPIO_CLK();FMC_A4_GPIO_CLK(); FMC_A5_GPIO_CLK();
 	FMC_A6_GPIO_CLK();FMC_A7_GPIO_CLK(); FMC_A8_GPIO_CLK();
 	FMC_A9_GPIO_CLK();FMC_A10_GPIO_CLK();FMC_A11_GPIO_CLK();
-	FMC_A12_GPIO_CLK();	
+	FMC_A12_GPIO_CLK();
 	/*数据信号线*/
 	FMC_D0_GPIO_CLK(); FMC_D1_GPIO_CLK() ; FMC_D2_GPIO_CLK() ; 
 	FMC_D3_GPIO_CLK(); FMC_D4_GPIO_CLK() ; FMC_D5_GPIO_CLK() ;
 	FMC_D6_GPIO_CLK(); FMC_D7_GPIO_CLK() ; FMC_D8_GPIO_CLK() ;
 	FMC_D9_GPIO_CLK(); FMC_D10_GPIO_CLK(); FMC_D11_GPIO_CLK();
 	FMC_D12_GPIO_CLK();FMC_D13_GPIO_CLK(); FMC_D14_GPIO_CLK();
-	FMC_D15_GPIO_CLK();  
+	FMC_D15_GPIO_CLK();	
 	/*控制信号线*/
 	FMC_CS_GPIO_CLK() ; FMC_BA0_GPIO_CLK(); FMC_BA1_GPIO_CLK() ;
 	FMC_WE_GPIO_CLK() ; FMC_RAS_GPIO_CLK(); FMC_CAS_GPIO_CLK();
 	FMC_CLK_GPIO_CLK(); FMC_CKE_GPIO_CLK(); FMC_UDQM_GPIO_CLK();
-	FMC_LDQM_GPIO_CLK();
+	FMC_LDQM_GPIO_CLK();FMC_UDQM2_GPIO_CLK();FMC_LDQM2_GPIO_CLK();
   
 	/*-- SDRAM IO 配置 -----------------------------------------------------*/     
 	GPIO_InitStructure.Mode      = GPIO_MODE_AF_PP;//配置为复用功能
 	GPIO_InitStructure.Pull      = GPIO_PULLUP;
-	GPIO_InitStructure.Speed     = GPIO_SPEED_HIGH;
+	GPIO_InitStructure.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
 	GPIO_InitStructure.Alternate = GPIO_AF12_FMC;
 
 	/*地址信号线 针对引脚配置*/
@@ -103,9 +103,9 @@ static void SDRAM_GPIO_Config(void)
 
 	GPIO_InitStructure.Pin = FMC_A11_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_A11_GPIO_PORT, &GPIO_InitStructure);
-
-	GPIO_InitStructure.Pin = FMC_A12_GPIO_PIN; 
-	HAL_GPIO_Init(FMC_A12_GPIO_PORT, &GPIO_InitStructure);  
+	
+  GPIO_InitStructure.Pin = FMC_A12_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_A12_GPIO_PORT, &GPIO_InitStructure);
 
 	/*数据信号线 针对引脚配置*/
 	GPIO_InitStructure.Pin = FMC_D0_GPIO_PIN; 
@@ -186,7 +186,12 @@ static void SDRAM_GPIO_Config(void)
 
 	GPIO_InitStructure.Pin = FMC_LDQM_GPIO_PIN; 
 	HAL_GPIO_Init(FMC_LDQM_GPIO_PORT, &GPIO_InitStructure);
-		
+
+	GPIO_InitStructure.Pin = FMC_UDQM2_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_UDQM2_GPIO_PORT, &GPIO_InitStructure);
+
+	GPIO_InitStructure.Pin = FMC_LDQM2_GPIO_PIN; 
+	HAL_GPIO_Init(FMC_LDQM2_GPIO_PORT, &GPIO_InitStructure);
 }
 
 /**
@@ -247,8 +252,8 @@ static void SDRAM_InitSequence(void)
 	/* Step 6 ----------------------------------------------------------------*/
 
 	/* 设置刷新计数器 */
-	/* 刷新周期=64ms/8192行=7.8125us */
-	/* COUNT=(7.8125 us x Freq) - 20 */
+	/* 刷新周期=64ms/4096行=15.625us */
+	/* COUNT=(15.625us x Freq) - 20 */
 	/* 设置自刷新速率 */
 	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 824); 
 }
@@ -264,9 +269,26 @@ void SDRAM_Init(void)
 {
 
   FMC_SDRAM_TimingTypeDef SdramTiming;
+	RCC_PeriphCLKInitTypeDef RCC_PeriphClkInit;
+	
   /* 配置FMC接口相关的 GPIO*/
   SDRAM_GPIO_Config();
-  
+
+	/* 配置SDRAM时钟源*/
+  RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FMC;
+  RCC_PeriphClkInit.PLL2.PLL2M = 5;
+  RCC_PeriphClkInit.PLL2.PLL2N = 144;
+  RCC_PeriphClkInit.PLL2.PLL2P = 2;
+  RCC_PeriphClkInit.PLL2.PLL2Q = 2;
+  RCC_PeriphClkInit.PLL2.PLL2R = 3;
+  RCC_PeriphClkInit.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
+  RCC_PeriphClkInit.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+  RCC_PeriphClkInit.PLL2.PLL2FRACN = 0;
+  RCC_PeriphClkInit.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
+  if (HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit) != HAL_OK)
+  {
+    while(1);
+  }
   /* 使能 FMC 时钟 */
   __FMC_CLK_ENABLE();
 
@@ -276,18 +298,18 @@ void SDRAM_Init(void)
   hsdram1.Init.SDBank = FMC_SDRAM_BANK2;
   hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_9;//SDRAM列数
   hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_13;//SDRAM行数
-  hsdram1.Init.MemoryDataWidth = FMC_SDRAM_MEM_BUS_WIDTH_16;//总线数据宽度为16位
+  hsdram1.Init.MemoryDataWidth = SDRAM_MEMORY_WIDTH;//总线数据宽度为16位
   hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;//4个扇区
   hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3;//列地址选通信延时
   hsdram1.Init.WriteProtection = FMC_SDRAM_WRITE_PROTECTION_DISABLE;//禁止写保护
-  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2;//SDRAM时钟fpclk=108M
+  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2;//SDRAM时钟120MHz
   hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_ENABLE;     //使能突发传输模式
   hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_1; //读通道延时
   /* SDRAM时序 */
   SdramTiming.LoadToActiveDelay = 2;//加载模式寄存器命令与行有效或刷新命令之间的延迟
   SdramTiming.ExitSelfRefreshDelay = 8;//退出自我刷新到行有效命令之间的延迟
   SdramTiming.SelfRefreshTime = 5;//行有效与预充电命令之间的延迟
-  SdramTiming.RowCycleDelay = 7;//两个刷新命令或两个行有效命令之间的延迟
+  SdramTiming.RowCycleDelay = 8;//两个刷新命令或两个行有效命令之间的延迟
   SdramTiming.WriteRecoveryTime = 2;//写入命令到预充电命令之间的延迟
   SdramTiming.RPDelay = 2;//预充电与行有效命令之间的延迟
   SdramTiming.RCDDelay = 2;//行有效与列读写命令之间的延迟
@@ -379,26 +401,26 @@ uint8_t SDRAM_Test(void)
 
   /*按8位格式读写数据，并校验*/
   
-  /* 把SDRAM数据全部重置为0 ，W9825G6KH_SIZE是以8位为单位的 */
-  for (counter = 0x00; counter < W9825G6KH_SIZE; counter++)
+  /* 把SDRAM数据全部重置为0 ，SDRAM_SIZE是以8位为单位的 */
+  for (counter = 0x00; counter < SDRAM_SIZE; counter++)
   {
     *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
   }
   
   /* 向整个SDRAM写入数据  8位 */
-  for (counter = 0; counter < W9825G6KH_SIZE; counter++)
+  for (counter = 0; counter < SDRAM_SIZE; counter++)
   {
     *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
   }
   
   /* 读取 SDRAM 数据并检测*/
-  for(counter = 0; counter<W9825G6KH_SIZE;counter++ )
+  for(counter = 0; counter<SDRAM_SIZE;counter++ )
   {
     ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);  //从该地址读出数据
     
     if(ubReaddata_8b != (uint8_t)(ubWritedata_8b + counter))      //检测数据，若不相等，跳出函数,返回检测失败结果。
     {
-      SDRAM_ERROR("8位数据读写错误！");
+      SDRAM_ERROR("8位数据读写错误！出错位置：%d",counter);
       return 0;
     }
   }
@@ -407,25 +429,25 @@ uint8_t SDRAM_Test(void)
   /*按16位格式读写数据，并检测*/
   
   /* 把SDRAM数据全部重置为0 */
-  for (counter = 0x00; counter < W9825G6KH_SIZE/2; counter++)
+  for (counter = 0x00; counter < SDRAM_SIZE/2; counter++)
   {
     *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)0x00;
   }
   
   /* 向整个SDRAM写入数据  16位 */
-  for (counter = 0; counter < W9825G6KH_SIZE/2; counter++)
+  for (counter = 0; counter < SDRAM_SIZE/2; counter++)
   {
     *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)(uhWritedata_16b + counter);
   }
   
     /* 读取 SDRAM 数据并检测*/
-  for(counter = 0; counter<W9825G6KH_SIZE/2;counter++ )
+  for(counter = 0; counter<SDRAM_SIZE/2;counter++ )
   {
     uhReaddata_16b = *(__IO uint16_t*)(SDRAM_BANK_ADDR + 2*counter);  //从该地址读出数据
     
     if(uhReaddata_16b != (uint16_t)(uhWritedata_16b + counter))      //检测数据，若不相等，跳出函数,返回检测失败结果。
     {
-      SDRAM_ERROR("16位数据读写错误！");
+      SDRAM_ERROR("16位数据读写错误！出错位置：%d",counter);
 
       return 0;
     }

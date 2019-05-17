@@ -1,12 +1,12 @@
 #ifndef __SDRAM_H
 #define	__SDRAM_H
 
-#include "stm32f7xx.h"
+#include "stm32h7xx.h"
 #include <stdio.h>
 
 
 
-#define W9825G6KH_SIZE 0x2000000  //32M字节
+#define SDRAM_SIZE 0x2000000  //32M字节,W9825G6KH-6
 
 /*SDRAM 的bank选择*/  
 #define FMC_BANK_SDRAM            FMC_Bank2_SDRAM  
@@ -20,8 +20,9 @@
 /**
   * @brief  FMC SDRAM 数据宽度
   */  
-/* #define SDRAM_MEMORY_WIDTH   FMC_SDMemory_Width_8b  */
-#define SDRAM_MEMORY_WIDTH    FMC_SDRAM_MEM_BUS_WIDTH_16 
+/* #define SDRAM_MEMORY_WIDTH   FMC_SDRAM_MEM_BUS_WIDTH_8  */
+#define SDRAM_MEMORY_WIDTH   FMC_SDRAM_MEM_BUS_WIDTH_16
+/* #define SDRAM_MEMORY_WIDTH    FMC_SDRAM_MEM_BUS_WIDTH_32 */ 
 
 /**
   * @brief  FMC SDRAM CAS Latency
@@ -128,7 +129,6 @@
 #define FMC_A12_GPIO_PORT        GPIOG
 #define FMC_A12_GPIO_CLK()       __GPIOG_CLK_ENABLE()
 #define FMC_A12_GPIO_PIN         GPIO_PIN_2
-
 /*数据信号线*/
 #define FMC_D0_GPIO_PORT         GPIOD
 #define FMC_D0_GPIO_CLK()        __GPIOD_CLK_ENABLE()
@@ -236,7 +236,15 @@
 #define FMC_LDQM_GPIO_CLK()       __GPIOE_CLK_ENABLE()
 #define FMC_LDQM_GPIO_PIN         GPIO_PIN_0
 
-/** @defgroup STM32F767 SDRAM函数
+/*UDQM2 LDQM2*/
+#define FMC_UDQM2_GPIO_PORT        GPIOI
+#define FMC_UDQM2_GPIO_CLK()       __GPIOI_CLK_ENABLE()
+#define FMC_UDQM2_GPIO_PIN         GPIO_PIN_5
+
+#define FMC_LDQM2_GPIO_PORT       GPIOI
+#define FMC_LDQM2_GPIO_CLK()      __GPIOI_CLK_ENABLE()
+#define FMC_LDQM2_GPIO_PIN        GPIO_PIN_4
+/** @defgroup STM32429 SDRAM函数
   * @{
   */ 
 void  SDRAM_Init(void);
