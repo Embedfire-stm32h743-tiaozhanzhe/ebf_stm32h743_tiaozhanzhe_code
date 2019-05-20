@@ -21,7 +21,7 @@
 
 /* W25Q256JV Micron memory */
 /* Size of the flash */
-#define QSPI_FLASH_SIZE            23     /* 地址总线宽度访问整个内存空间 */
+#define QSPI_FLASH_SIZE            24     /* 地址总线宽度访问整个内存空间 */
 #define QSPI_PAGE_SIZE             256
 
 /* QSPI Info */
@@ -38,7 +38,7 @@ typedef struct {
 /** 
   * @brief  W25Q256JV配置 
   */  
-#define W25Q256JV_FLASH_SIZE                  0x1000000 /* 128 MBits => 16MBytes */
+#define W25Q256JV_FLASH_SIZE                  0x2000000 /* 128 MBits => 16MBytes */
 #define W25Q256JV_SECTOR_SIZE                 0x10000   /* 256 sectors of 64KBytes */
 #define W25Q256JV_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
 #define W25Q256JV_PAGE_SIZE                   0x100     /* 65536 pages of 256 bytes */

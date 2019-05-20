@@ -8,9 +8,9 @@
 //#define  sFLASH_ID                       0xEF3015     //W25X16
 //#define  sFLASH_ID                       0xEF4015	    //W25Q16
 //#define  sFLASH_ID                       0XEF4017     //W25Q64
-//#define  sFLASH_ID                         0XEF4018     //W25Q128
+//#define  sFLASH_ID                         0XEF4018     //W25Q256
 #define  sFLASH_ID                         0XEF4019     //W25Q256
-
+//#define  sFLASH_ID                         0XEF7019     //W25Q256JVEM
 /* QSPI Error codes */
 #define QSPI_OK            ((uint8_t)0x00)
 #define QSPI_ERROR         ((uint8_t)0x01)
@@ -21,7 +21,7 @@
 
 /* W25Q256JV Micron memory */
 /* Size of the flash */
-#define QSPI_FLASH_SIZE            23     /* 地址总线宽度访问整个内存空间 */
+#define QSPI_FLASH_SIZE            24     /* 地址总线宽度访问整个内存空间 */
 #define QSPI_PAGE_SIZE             256
 
 /* QSPI Info */
@@ -38,7 +38,7 @@ typedef struct {
 /** 
   * @brief  W25Q256JV配置 
   */  
-#define W25Q256JV_FLASH_SIZE                  0x1000000 /* 128 MBits => 16MBytes */
+#define W25Q256JV_FLASH_SIZE                  0x4000000 /* 128 MBits => 16MBytes */
 #define W25Q256JV_SECTOR_SIZE                 0x10000   /* 256 sectors of 64KBytes */
 #define W25Q256JV_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
 #define W25Q256JV_PAGE_SIZE                   0x100     /* 65536 pages of 256 bytes */
@@ -91,6 +91,7 @@ typedef struct {
 /* 编程操作 */
 #define PAGE_PROG_CMD                        0x02
 #define QUAD_INPUT_PAGE_PROG_CMD             0x32
+#define QUAD_INPUT_PAGE_PROG_CMD_4BYTE       0x34
 #define EXT_QUAD_IN_FAST_PROG_CMD            0x12
 #define Enter_4Byte_Addr_Mode_CMD            0xB7
 
@@ -140,18 +141,39 @@ typedef struct {
 #define QSPI_FLASH_BK1_IO3_CLK_ENABLE()    __GPIOF_CLK_ENABLE()
 #define QSPI_FLASH_BK1_IO3_AF              GPIO_AF9_QUADSPI
 
-#define QSPI_FLASH_CS_PIN                 GPIO_PIN_10              
-#define QSPI_FLASH_CS_GPIO_PORT           GPIOB                   
-#define QSPI_FLASH_CS_GPIO_CLK_ENABLE()   __GPIOB_CLK_ENABLE()
-#define QSPI_FLASH_CS_GPIO_AF             GPIO_AF9_QUADSPI
+#define QSPI_FLASH_CS_PIN                 GPIO_PIN_6              
+#define QSPI_FLASH_CS_GPIO_PORT           GPIOG                   
+#define QSPI_FLASH_CS_GPIO_CLK_ENABLE()   __GPIOG_CLK_ENABLE()
+#define QSPI_FLASH_CS_GPIO_AF             GPIO_AF10_QUADSPI
 
+/*QSPI BANK2接口定义-开头****************************/
+#define QSPI_FLASH_BK2_IO0_PIN             GPIO_PIN_2                
+#define QSPI_FLASH_BK2_IO0_PORT            GPIOH                   
+#define QSPI_FLASH_BK2_IO0_CLK_ENABLE()    __GPIOH_CLK_ENABLE()
+#define QSPI_FLASH_BK2_IO0_AF              GPIO_AF9_QUADSPI
+
+#define QSPI_FLASH_BK2_IO1_PIN             GPIO_PIN_3                
+#define QSPI_FLASH_BK2_IO1_PORT            GPIOH                      
+#define QSPI_FLASH_BK2_IO1_CLK_ENABLE()    __GPIOH_CLK_ENABLE()
+#define QSPI_FLASH_BK2_IO1_AF              GPIO_AF9_QUADSPI
+
+#define QSPI_FLASH_BK2_IO2_PIN             GPIO_PIN_9                
+#define QSPI_FLASH_BK2_IO2_PORT            GPIOG                      
+#define QSPI_FLASH_BK2_IO2_CLK_ENABLE()    __GPIOG_CLK_ENABLE()
+#define QSPI_FLASH_BK2_IO2_AF              GPIO_AF9_QUADSPI
+
+#define QSPI_FLASH_BK2_IO3_PIN             GPIO_PIN_14                
+#define QSPI_FLASH_BK2_IO3_PORT            GPIOG                      
+#define QSPI_FLASH_BK2_IO3_CLK_ENABLE()    __GPIOG_CLK_ENABLE()
+#define QSPI_FLASH_BK2_IO3_AF              GPIO_AF9_QUADSPI
 
 
 void QSPI_FLASH_Init(void);
 uint8_t BSP_QSPI_Init(void);
 uint8_t BSP_QSPI_Erase_Block(uint32_t BlockAddress);
-uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
+uint8_t BSP_QSPI_Erase_Chip(void);
 uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
+uint8_t BSP_QSPI_FastRead(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
 uint8_t BSP_QSPI_Write(uint8_t* pData, uint32_t WriteAddr, uint32_t Size);
 
 
@@ -161,6 +183,10 @@ static uint8_t QSPI_AutoPollingMemReady  (uint32_t Timeout);
 
 uint32_t QSPI_FLASH_ReadDeviceID(void);
 uint32_t QSPI_FLASH_ReadID(void);
+uint32_t QSPI_FLASH_ReadStatusReg(uint8_t reg);
+uint32_t QSPI_FLASH_WriteStatusReg(uint8_t reg,uint8_t regvalue);
+void QSPI_Set_WP_High(void);
+void QSPI_Set_WP_TO_QSPI_IO(void);
 
 #endif /* __SPI_FLASH_H */
 
