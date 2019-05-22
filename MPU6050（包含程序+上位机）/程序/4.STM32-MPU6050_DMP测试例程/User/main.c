@@ -3,7 +3,7 @@
   * @file    main.c
   * @author  fire
   * @version V1.0
-  * @date    2017-xx-xx
+  * @date    2019-xx-xx
   * @brief   MPU6050测试程序
   * 本程序必须配合匿名上位机使用！！串口向上位机传输的是数据包，所以直接用串口调试助手看是乱码，这是正常的！！
   ******************************************************************************
@@ -294,6 +294,41 @@ static void read_from_mpl(void)
             (inv_time_t*)&timestamp))
             eMPL_send_data(PACKET_DATA_EULER, data);
     }
+		
+		
+		/********************使用液晶屏显示数据**************************/
+    if(1)
+    {
+				char cStr [ 70 ];
+				unsigned long timestamp,step_count,walk_time;
+
+			
+				/*获取欧拉角*/
+			  if (inv_get_sensor_type_euler(data, &accuracy,(inv_time_t*)&timestamp))
+						{
+							float Pitch,Roll,Yaw;
+							//inv_get_sensor_type_euler读出的数据是Q16格式，所以左移16位.
+							Pitch =data[0]*1.0/(1<<16) ;
+							Roll = data[1]*1.0/(1<<16);
+							Yaw = data[2]*1.0/(1<<16);
+							
+							/*向匿名上位机发送姿态*/
+							Data_Send_Status(Pitch,Roll,Yaw);
+							/*向匿名上位机发送原始数据*/
+							Send_Data((int16_t *)&sensors.gyro.raw,(int16_t *)&sensors.accel.raw);						
+						}
+						
+					/*获取步数*/        
+				get_tick_count(&timestamp);
+				if (timestamp > hal.next_pedo_ms) {
+
+						hal.next_pedo_ms = timestamp + PEDO_READ_MS;
+						dmp_get_pedometer_step_count(&step_count);
+						dmp_get_pedometer_walk_time(&walk_time);						
+				}
+			}
+
+		
 		
     if (hal.report & PRINT_ROT_MAT) {
         if (inv_get_sensor_type_rot_mat(data, &accuracy,
@@ -782,7 +817,6 @@ int main(void)
     unsigned short compass_fsr;
 #endif
 	
-//  HAL_Init();
   /* 系统时钟初始化成400 MHz */
   SystemClock_Config();
   /* LED 端口初始化 */
@@ -796,16 +830,14 @@ int main(void)
 	I2cMaster_Init(); 
   result = mpu_init(&int_param);
   if (result) {
-      MPL_LOGE("Could not initialize gyro.\n");
-			LED_RED;
+		MPL_LOGE("Could not initialize gyro.\n");
+		LED1_ON;
   }
 	else
-	{	
-				LED_GREEN;
+	{
+		LED2_ON;
 	}
-
-  
-
+	
     /* If you're not using an MPU9150 AND you're not using DMP features, this
      * function will place all slaves on the primary bus.
      * mpu_set_bypass(1);
@@ -813,7 +845,7 @@ int main(void)
 
   result = inv_init_mpl();
   if (result) {
-      MPL_LOGE("Could not initialize MPL.\n");
+		MPL_LOGE("Could not initialize MPL.\n");
   }
 
     /* Compute 6-axis and 9-axis quaternions. */
@@ -1191,8 +1223,7 @@ static void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_OscInitTypeDef RCC_OscInitStruct;
   HAL_StatusTypeDef ret = HAL_OK;
-  
-  /*使能供电配置更新 */
+    /*使能供电配置更新 */
   MODIFY_REG(PWR->CR3, PWR_CR3_SCUEN, 0);
 
   /* 当器件的时钟频率低于最大系统频率时，电压调节可以优化功耗，
