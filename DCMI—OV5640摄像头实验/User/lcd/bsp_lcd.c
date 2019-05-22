@@ -23,6 +23,7 @@
 #include "./fonts//font12.c"
 #include "./fonts//font8.c"
 #include "./flash/bsp_qspi_flash.h"
+#include "./delay/core_delay.h"  
 
 #define POLY_X(Z)              ((int32_t)((Points + Z)->X))
 #define POLY_Y(Z)              ((int32_t)((Points + Z)->Y)) 

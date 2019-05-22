@@ -41,90 +41,94 @@ uint8_t fps=0;
 int main(void)
 
 {  
-    OV5640_IDTypeDef OV5640_Camera_ID;	
-    /* 系统时钟初始化成400MHz */
-    SystemClock_Config();
-    /* LED 端口初始化 */
-    LED_GPIO_Config();
-    /* 配置串口1为：115200 8-N-1 */
-    UARTx_Config();	
-    
-    printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
-    printf("\r\n野火STM32H743 LTDC液晶显示中文测试例程\r\n");
-    /*蓝灯亮，表示正在读写SDRAM测试*/
-    //LED_BLUE;
-    /* LCD 端口初始化 */ 
-    LCD_Init();
-    /* LCD 第一层初始化 */ 
-    LCD_LayerInit(0, LCD_FB_START_ADDRESS,RGB565);
-    /* LCD 第二层初始化 */ 
-    LCD_LayerInit(1, LCD_FB_START_ADDRESS+(LCD_GetXSize()*LCD_GetYSize()*4),ARGB8888);
-    /* 使能LCD，包括开背光 */ 
-    LCD_DisplayOn(); 
+	OV5640_IDTypeDef OV5640_Camera_ID;	
+	/* 系统时钟初始化成400MHz */
+	SystemClock_Config();
+	/* 开启I-Cache */
+	SCB_EnableICache();
+	/* 开启D-Cache */
+	SCB_EnableDCache();
+	/* LED 端口初始化 */
+	LED_GPIO_Config();
+	/* 配置串口1为：115200 8-N-1 */
+	UARTx_Config();	
+	
+	printf("\r\n 欢迎使用野火  STM32 H743 开发板。\r\n");		 
+	printf("\r\n野火STM32H743 LTDC液晶显示中文测试例程\r\n");
+	/*蓝灯亮，表示正在读写SDRAM测试*/
+	LED_BLUE;
+	/* LCD 端口初始化 */ 
+	LCD_Init();
+	/* LCD 第一层初始化 */ 
+	LCD_LayerInit(0, LCD_FB_START_ADDRESS,RGB565);
+	/* LCD 第二层初始化 */ 
+	LCD_LayerInit(1, LCD_FB_START_ADDRESS+(LCD_GetXSize()*LCD_GetYSize()*4),ARGB8888);
+	/* 使能LCD，包括开背光 */ 
+	LCD_DisplayOn(); 
 
-    /* 选择LCD第一层 */
-    LCD_SelectLayer(0);
+	/* 选择LCD第一层 */
+	LCD_SelectLayer(0);
 
-    /* 第一层清屏，显示全蓝色 */ 
-    LCD_Clear(LCD_COLOR_BLUE);  
+	/* 第一层清屏，显示全蓝色 */ 
+	LCD_Clear(LCD_COLOR_BLUE);  
 
-    /* 选择LCD第二层 */
-    LCD_SelectLayer(1);
+	/* 选择LCD第二层 */
+	LCD_SelectLayer(1);
 
-    /* 第二层清屏，显示透明 */ 
-    LCD_Clear(TRANSPARENCY);
+	/* 第二层清屏，显示透明 */ 
+	LCD_Clear(TRANSPARENCY);
 
-    /* 配置第一和第二层的透明度,0位完全透明，255为完全不透明*/
-    LCD_SetTransparency(0, 255);
-    LCD_SetTransparency(1, 255);
-    
-    LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
-    LCD_DisplayStringLine_EN_CH(1,(uint8_t* )" 模式:UXGA 800x480");
-    CAMERA_DEBUG("STM32H743 DCMI 驱动OV5640例程");
-    I2CMaster_Init();
-    OV5640_HW_Init();			
-    //初始化 I2C
-    
-    /* 读取摄像头芯片ID，确定摄像头正常连接 */
-    OV5640_ReadID(&OV5640_Camera_ID);
+	/* 配置第一和第二层的透明度,0位完全透明，255为完全不透明*/
+	LCD_SetTransparency(0, 255);
+	LCD_SetTransparency(1, 255);
+	
+	LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
+	LCD_DisplayStringLine_EN_CH(1,(uint8_t* )" 模式:UXGA 800x480");
+	CAMERA_DEBUG("STM32H743 DCMI 驱动OV5640例程");
+	I2CMaster_Init();
+	OV5640_HW_Init();			
+	//初始化 I2C
+	
+	/* 读取摄像头芯片ID，确定摄像头正常连接 */
+	OV5640_ReadID(&OV5640_Camera_ID);
 
-    if(OV5640_Camera_ID.PIDH  == 0x56)
-    {
-      CAMERA_DEBUG("%x%x",OV5640_Camera_ID.PIDH ,OV5640_Camera_ID.PIDL);
-    }
-    else
-    {
-      LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
-      LCD_DisplayStringLine_EN_CH(8,(uint8_t*) "         没有检测到OV5640，请重新检查连接。");
-      CAMERA_DEBUG("没有检测到OV5640摄像头，请重新检查连接。");
-      while(1);  
-    }
-      /* 配置摄像头输出像素格式 */
-    OV5640_RGB565Config();	
-    /* 初始化摄像头，捕获并显示图像 */
-    OV5640_Init();
-    //刷OV5640的自动对焦固件
-    OV5640_AUTO_FOCUS();
-    //重置
-    fps =0;
-    Task_Delay[0]=1000;
-    
-    while(1)
-    {
-        if(Task_Delay[0]==0)
-        {
-            LCD_SelectLayer(1);       
-            LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
-            sprintf((char*)dispBuf, " 帧率:%d FPS", fps/1);
-            LCD_ClearLine(2);
-            /*输出帧率*/
-            LCD_DisplayStringLine_EN_CH(2,dispBuf);
-            //重置
-            fps =0;
-            Task_Delay[0]=1000; //此值每1ms会减1，减到0才可以重新进来这里
-            
-        }		
-    }  
+	if(OV5640_Camera_ID.PIDH  == 0x56)
+	{
+		CAMERA_DEBUG("%x%x",OV5640_Camera_ID.PIDH ,OV5640_Camera_ID.PIDL);
+	}
+	else
+	{
+		LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
+		LCD_DisplayStringLine_EN_CH(8,(uint8_t*) "         没有检测到OV5640，请重新检查连接。");
+		CAMERA_DEBUG("没有检测到OV5640摄像头，请重新检查连接。");
+		while(1);  
+	}
+		/* 配置摄像头输出像素格式 */
+	OV5640_RGB565Config();	
+	/* 初始化摄像头，捕获并显示图像 */
+	OV5640_Init();
+	//刷OV5640的自动对焦固件
+	OV5640_AUTO_FOCUS();
+	//重置
+	fps =0;
+	Task_Delay[0]=1000;
+	
+	while(1)
+	{
+		if(Task_Delay[0]==0)
+		{
+			LCD_SelectLayer(1);       
+			LCD_SetColors(LCD_COLOR_WHITE,TRANSPARENCY);
+			sprintf((char*)dispBuf, " 帧率:%d FPS", fps/1);
+			LCD_ClearLine(2);
+			/*输出帧率*/
+			LCD_DisplayStringLine_EN_CH(2,dispBuf);
+			//重置
+			fps =0;
+			Task_Delay[0]=1000; //此值每1ms会减1，减到0才可以重新进来这里
+			
+		}		
+	}  
 }
 
 /**
