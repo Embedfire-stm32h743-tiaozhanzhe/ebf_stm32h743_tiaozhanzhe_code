@@ -97,15 +97,28 @@ extern sFONT Font8;
 
 #if GBKCODE_FLASH
 /*使用FLASH字模*/
+/*=========================================================================================*/
 /*中文字库存储在FLASH的起始地址*/
 /*FLASH*/
-#define GBKCODE_START_ADDRESS   1360*4096
+/* 资源烧录到的FLASH基地址（目录地址） */
+#define RESOURCE_BASE_ADDR	(16*1024*1024)
+/* 存储在FLASH中的资源目录大小 */
+#define CATALOG_SIZE				(8*1024)
 
+/* 字库目录信息类型 */
+typedef struct 
+{
+	char 	      name[40];  /* 资源的名字 */
+	uint32_t  	size;      /* 资源的大小 */ 
+	uint32_t 	  offset;    /* 资源相对于基地址的偏移 */
+}CatalogTypeDef;
+/*=========================================================================================*/
 
 /*获取字库的函数*/
 //定义获取中文字符字模数组的函数名，ucBuffer为存放字模数组名，usChar为中文字符（国标码）
 #define      GetGBKCode( ucBuffer, usChar )  GetGBKCode_from_EXFlash( ucBuffer, usChar )  
 int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c);
+int GetResOffset(const char *res_name);
 
 #else
 /*使用SD字模*/
