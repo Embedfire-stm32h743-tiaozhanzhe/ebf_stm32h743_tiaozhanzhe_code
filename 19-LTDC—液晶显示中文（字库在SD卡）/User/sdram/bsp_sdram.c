@@ -297,7 +297,7 @@ void SDRAM_Init(void)
   hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;    // 4 个扇区
   hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3;                 // 列地址选通信延时
   hsdram1.Init.WriteProtection = FMC_SDRAM_WRITE_PROTECTION_DISABLE; // 禁止写保护
-  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2;             // SDRAM 时钟 133MHz
+  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2;             // SDRAM 时钟 120MHz
   hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_ENABLE;                  // 使能突发传输模式
   hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_1;              // 读通道延时
   /* SDRAM时序 */

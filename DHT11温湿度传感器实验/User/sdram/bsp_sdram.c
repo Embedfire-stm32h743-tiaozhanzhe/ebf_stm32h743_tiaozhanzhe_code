@@ -243,10 +243,10 @@ static void SDRAM_InitSequence(void)
 	/* Step 6 ----------------------------------------------------------------*/
 
 	/* 设置刷新计数器 */
-	/* 刷新周期=64ms/4096行=15.625us */
-	/* COUNT=(15.625us x Freq) - 20 */
+	/* 刷新周期=64ms/8192行=7.8125us */
+	/* COUNT=(7.8125us x Freq) - 20 */
 	/* 设置自刷新速率 */
-	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 1855); 
+	HAL_SDRAM_ProgramRefreshRate(&sdramHandle, 917); 
 }
 
 
