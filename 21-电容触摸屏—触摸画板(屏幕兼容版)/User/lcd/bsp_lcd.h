@@ -7,26 +7,6 @@
 #include "./sdram/bsp_sdram.h"
 #include "./fonts/fonts.h"
 
-/* LCD 层像素格式*/
-#define ARGB8888 	LTDC_PIXEL_FORMAT_ARGB8888  /*!< ARGB8888 LTDC像素格式 */
-#define RGB888 		LTDC_PIXEL_FORMAT_RGB888    /*!< RGB888 LTDC像素格式   */
-#define RGB565 		LTDC_PIXEL_FORMAT_RGB565    /*!< RGB565 LTDC像素格式   */
-#define ARGB1555 	LTDC_PIXEL_FORMAT_ARGB1555  /*!< ARGB1555 LTDC像素格式 */
-#define ARGB4444 	LTDC_PIXEL_FORMAT_ARGB4444  /*!< ARGB4444 LTDC像素格式 */
-
-typedef struct 
-{ 
-  uint32_t TextColor; 
-  uint32_t BackColor;  
-  sFONT    *pFont;
-}LCD_DrawPropTypeDef;   
-   
-typedef struct 
-{
-  int16_t X;
-  int16_t Y;
-}Point, * pPoint; 
-
 typedef struct
 {
   /*根据液晶数据手册的参数配置*/
@@ -44,32 +24,8 @@ typedef struct
 
   uint16_t lcd_pixel_width; //液晶分辨率，宽
   uint16_t lcd_pixel_height;//液晶分辨率，高
-  
-  uint16_t m_palette_btn_width; //液晶分辨率，宽
-  uint16_t m_palette_btn_height;//液晶分辨率，高  
 
 }LCD_PARAM_TypeDef;
-
-
-/** 
-  * @brief  LCD液晶类型
-  */   
-typedef enum
-{ 
-  INCH_5  = 0x00, /* 野火5寸屏 */
-  INCH_7,     /* 野火7寸屏 */
-  INCH_4_3,  /* 野火4.3寸屏 */
-  
-  LCD_TYPE_NUM /* LCD类型总数*/
-}LCD_TypeDef;
-
-/* 当前使用的LCD，默认为5寸屏 */
-extern LCD_TypeDef cur_lcd;
-/* 不同液晶屏的参数 */
-extern const LCD_PARAM_TypeDef lcd_param[];
-
-
-
 
 /* LCD Size (Width and Height) */
 #define  LCD_PIXEL_WIDTH          lcd_param[cur_lcd].lcd_pixel_width
@@ -91,6 +47,42 @@ extern const LCD_PARAM_TypeDef lcd_param[];
 #define HFP  lcd_param[cur_lcd].hfp		//HSYNC前的无效像素
 #define VFP  lcd_param[cur_lcd].vfp		//VSYNC前的无效行数
 
+/** 
+  * @brief  LCD液晶类型
+  */   
+typedef enum
+{ 
+  INCH_5  = 0x00, /* 野火5寸屏 */
+  INCH_7,     /* 野火7寸屏 */
+  INCH_4_3,  /* 野火4.3寸屏 */
+  
+  LCD_TYPE_NUM /* LCD类型总数*/
+}LCD_TypeDef;
+
+/* 当前使用的LCD，默认为5寸屏 */
+extern LCD_TypeDef cur_lcd;
+/* 不同液晶屏的参数 */
+extern const LCD_PARAM_TypeDef lcd_param[];
+
+/* LCD 层像素格式*/
+#define ARGB8888 	LTDC_PIXEL_FORMAT_ARGB8888  /*!< ARGB8888 LTDC像素格式 */
+#define RGB888 		LTDC_PIXEL_FORMAT_RGB888    /*!< RGB888 LTDC像素格式   */
+#define RGB565 		LTDC_PIXEL_FORMAT_RGB565    /*!< RGB565 LTDC像素格式   */
+#define ARGB1555 	LTDC_PIXEL_FORMAT_ARGB1555  /*!< ARGB1555 LTDC像素格式 */
+#define ARGB4444 	LTDC_PIXEL_FORMAT_ARGB4444  /*!< ARGB4444 LTDC像素格式 */
+
+typedef struct 
+{ 
+  uint32_t TextColor; 
+  uint32_t BackColor;  
+  sFONT    *pFont;
+}LCD_DrawPropTypeDef;   
+   
+typedef struct 
+{
+  int16_t X;
+  int16_t Y;
+}Point, * pPoint; 
 
 /** 
   * @brief  字体对齐模式  

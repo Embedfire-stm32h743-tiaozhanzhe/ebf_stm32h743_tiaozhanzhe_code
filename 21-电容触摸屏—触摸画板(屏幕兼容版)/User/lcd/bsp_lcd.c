@@ -41,6 +41,7 @@ LCD_DrawPropTypeDef DrawProp[MAX_LAYER_NUMBER];
  * @retval None
  */
 
+
 /* 不同液晶屏的参数 */
 const LCD_PARAM_TypeDef lcd_param[LCD_TYPE_NUM]={
 
@@ -62,9 +63,7 @@ const LCD_PARAM_TypeDef lcd_param[LCD_TYPE_NUM]={
     
     .lcd_pixel_width = LCD_MAX_PIXEL_WIDTH,//液晶分辨率，宽
     .lcd_pixel_height = LCD_MAX_PIXEL_HEIGHT,//液晶分辨率，高
-    
-    .m_palette_btn_width = 90,//触摸画板按键的宽度
-    .m_palette_btn_height = 50,//触摸画板按键的高度
+
   },
   
    /* 7寸屏参数（与5寸一样） */
@@ -85,10 +84,7 @@ const LCD_PARAM_TypeDef lcd_param[LCD_TYPE_NUM]={
     
     .lcd_pixel_width = LCD_MAX_PIXEL_WIDTH,//液晶分辨率，宽
     .lcd_pixel_height = LCD_MAX_PIXEL_HEIGHT,//液晶分辨率，高
-    
-    .m_palette_btn_width = 90,//触摸画板按键的宽度
-    .m_palette_btn_height = 50,//触摸画板按键的高度    
-    
+  
   },
 
   /* 4.3寸屏参数 */
@@ -108,17 +104,11 @@ const LCD_PARAM_TypeDef lcd_param[LCD_TYPE_NUM]={
     
     .lcd_pixel_width = 480,//液晶分辨率，宽
     .lcd_pixel_height = 272,//液晶分辨率，高
-    
-    .m_palette_btn_width = 50,//触摸画板按键的宽度
-    .m_palette_btn_height = 30,//触摸画板按键的高度    
+   
   }
 };
 
-
 LCD_TypeDef cur_lcd = INCH_5;
-
-const uint8_t PIXEL_BPP[]={4,3,2,2,2,1,1,2};  
-
 
 static void DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *c);
 static void FillTriangle(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uint16_t y2, uint16_t y3);
@@ -144,7 +134,7 @@ static void LCD_GPIO_Config(void)
   LTDC_B2_GPIO_CLK_ENABLE();LTDC_B3_GPIO_CLK_ENABLE();LTDC_B4_GPIO_CLK_ENABLE();\
   LTDC_B5_GPIO_CLK_ENABLE();LTDC_B6_GPIO_CLK_ENABLE();LTDC_B7_GPIO_CLK_ENABLE();\
   LTDC_CLK_GPIO_CLK_ENABLE();LTDC_HSYNC_GPIO_CLK_ENABLE();LTDC_VSYNC_GPIO_CLK_ENABLE();\
-  LTDC_DE_GPIO_CLK_ENABLE();LTDC_BL_GPIO_CLK_ENABLE();
+  LTDC_DE_GPIO_CLK_ENABLE();LTDC_DISP_GPIO_CLK_ENABLE();LTDC_BL_GPIO_CLK_ENABLE();
 /* GPIO配置 */
 
  /* 红色数据线 */                        
@@ -267,11 +257,13 @@ static void LCD_GPIO_Config(void)
   GPIO_InitStruct.Alternate = LTDC_DE_AF;
   HAL_GPIO_Init(LTDC_DE_GPIO_PORT, &GPIO_InitStruct);
   
-  //背光BL                            
+  //背光BL 及液晶使能信号DISP
+  GPIO_InitStruct.Pin = LTDC_DISP_GPIO_PIN;                             
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   
+  HAL_GPIO_Init(LTDC_DISP_GPIO_PORT, &GPIO_InitStruct);
   
   
   GPIO_InitStruct.Pin = LTDC_BL_GPIO_PIN; 
@@ -725,57 +717,57 @@ void LCD_DisplayStringLine(uint16_t Line, uint8_t *ptr)
  * @param  usChar ：要显示的中文字符（国标码）
  * @retval 无
  */ 
-//static void LCD_DispChar_CH (uint16_t Xpos, uint16_t Ypos, uint16_t Text)
-//{
-//  uint32_t i = 0, j = 0;
-//  uint16_t height, width;
-//  uint8_t  offset;
-//  uint8_t  *pchar;
-//  uint8_t  Buffer[HEIGHT_CH_CHAR*3];
-//  uint32_t line;
-//	
-//  GetGBKCode (Buffer, Text );
-//  
-//  height = 	HEIGHT_CH_CHAR;//取字模数据//获取正在使用字体高度
-//  width  =  WIDTH_CH_CHAR; //获取正在使用字体宽度
-//  
-//  offset =  8 *((width + 7)/8) -  width ;//计算字符的每一行像素的偏移值，实际存储大小-字体宽度
-//  
-//  for(i = 0; i < height; i++)//遍历字体高度绘点
-//  {
-//    pchar = ((uint8_t *)Buffer + (width + 7)/8 * i);//计算字符的每一行像素的偏移地址
-//    
-//    switch(((width + 7)/8))//根据字体宽度来提取不同字体的实际像素值
-//    {
-//      
-//    case 1:
-//      line =  pchar[0];      //提取字体宽度小于8的字符的像素值
-//      break;
-//      
-//    case 2:
-//      line =  (pchar[0]<< 8) | pchar[1]; //提取字体宽度大于8小于16的字符的像素值     
-//      break;
-//      
-//    case 3:
-//    default:
-//      line =  (pchar[0]<< 16) | (pchar[1]<< 8) | pchar[2]; //提取字体宽度大于16小于24的字符的像素值     
-//      break;
-//    } 
-//    
-//    for (j = 0; j < width; j++)//遍历字体宽度绘点
-//    {
-//      if(line & (1 << (width- j + offset- 1))) //根据每一行的像素值及偏移位置按照当前字体颜色进行绘点
-//      {
-//        LCD_DrawPixel((Xpos + j), Ypos, DrawProp[ActiveLayer].TextColor);
-//      }
-//      else//如果这一行没有字体像素则按照背景颜色绘点
-//      {
-//        LCD_DrawPixel((Xpos + j), Ypos, DrawProp[ActiveLayer].BackColor);
-//      } 
-//    }
-//    Ypos++;
-//  }
-//}
+static void LCD_DispChar_CH (uint16_t Xpos, uint16_t Ypos, uint16_t Text)
+{
+  uint32_t i = 0, j = 0;
+  uint16_t height, width;
+  uint8_t  offset;
+  uint8_t  *pchar;
+  uint8_t  Buffer[HEIGHT_CH_CHAR*3];
+  uint32_t line;
+	
+  GetGBKCode (Buffer, Text );
+  
+  height = 	HEIGHT_CH_CHAR;//取字模数据//获取正在使用字体高度
+  width  =  WIDTH_CH_CHAR; //获取正在使用字体宽度
+  
+  offset =  8 *((width + 7)/8) -  width ;//计算字符的每一行像素的偏移值，实际存储大小-字体宽度
+  
+  for(i = 0; i < height; i++)//遍历字体高度绘点
+  {
+    pchar = ((uint8_t *)Buffer + (width + 7)/8 * i);//计算字符的每一行像素的偏移地址
+    
+    switch(((width + 7)/8))//根据字体宽度来提取不同字体的实际像素值
+    {
+      
+    case 1:
+      line =  pchar[0];      //提取字体宽度小于8的字符的像素值
+      break;
+      
+    case 2:
+      line =  (pchar[0]<< 8) | pchar[1]; //提取字体宽度大于8小于16的字符的像素值     
+      break;
+      
+    case 3:
+    default:
+      line =  (pchar[0]<< 16) | (pchar[1]<< 8) | pchar[2]; //提取字体宽度大于16小于24的字符的像素值     
+      break;
+    } 
+    
+    for (j = 0; j < width; j++)//遍历字体宽度绘点
+    {
+      if(line & (1 << (width- j + offset- 1))) //根据每一行的像素值及偏移位置按照当前字体颜色进行绘点
+      {
+        LCD_DrawPixel((Xpos + j), Ypos, DrawProp[ActiveLayer].TextColor);
+      }
+      else//如果这一行没有字体像素则按照背景颜色绘点
+      {
+        LCD_DrawPixel((Xpos + j), Ypos, DrawProp[ActiveLayer].BackColor);
+      } 
+    }
+    Ypos++;
+  }
+}
 
 /**
   * @brief  显示一行字符，若超出液晶宽度，不自动换行。
@@ -800,23 +792,23 @@ void LCD_DisplayStringLine_EN_CH(uint16_t Line, uint8_t *ptr)
 		/* 指向字符串中的下一个字符 */
 		ptr++;
 	}
-//	
-//	else	                            //汉字字符
-//	{	
-//		uint16_t usCh;
-//		
-//		/*一个汉字两字节*/
-//		usCh = * ( uint16_t * ) ptr;	
-//		/*交换编码顺序*/
-//		usCh = ( usCh << 8 ) + ( usCh >> 8 );		
-//		
-//		/*显示汉字*/
-//		LCD_DispChar_CH ( refcolumn,LINE(Line) , usCh );
-//		/*显示位置偏移*/
-//		refcolumn += WIDTH_CH_CHAR;
-//		/* 指向字符串中的下一个字符 */
-//		ptr += 2; 		
-//    }		
+	
+	else	                            //汉字字符
+	{	
+		uint16_t usCh;
+		
+		/*一个汉字两字节*/
+		usCh = * ( uint16_t * ) ptr;	
+		/*交换编码顺序*/
+		usCh = ( usCh << 8 ) + ( usCh >> 8 );		
+		
+		/*显示汉字*/
+		LCD_DispChar_CH ( refcolumn,LINE(Line) , usCh );
+		/*显示位置偏移*/
+		refcolumn += WIDTH_CH_CHAR;
+		/* 指向字符串中的下一个字符 */
+		ptr += 2; 		
+    }		
   }
 }
 /**
@@ -843,22 +835,22 @@ void LCD_DispString_EN_CH( uint16_t Line, uint16_t Column, const uint8_t * pStr 
 			pStr++;
 		}
 		
-//		else	                            //汉字字符
-//		{	
-//			uint16_t usCh;
-//			
-//			/*一个汉字两字节*/
-//			usCh = * ( uint16_t * ) pStr;	
-//			/*交换编码顺序*/
-//			usCh = ( usCh << 8 ) + ( usCh >> 8 );		
-//			
-//			/*显示汉字*/
-//			LCD_DispChar_CH (Column,Line, usCh );
-//			/*显示位置偏移*/
-//			Column += WIDTH_CH_CHAR;
-//			/* 指向字符串中的下一个字符 */
-//			pStr += 2; 		
-//	}
+		else	                            //汉字字符
+		{	
+			uint16_t usCh;
+			
+			/*一个汉字两字节*/
+			usCh = * ( uint16_t * ) pStr;	
+			/*交换编码顺序*/
+			usCh = ( usCh << 8 ) + ( usCh >> 8 );		
+			
+			/*显示汉字*/
+			LCD_DispChar_CH (Column,Line, usCh );
+			/*显示位置偏移*/
+			Column += WIDTH_CH_CHAR;
+			/* 指向字符串中的下一个字符 */
+			pStr += 2; 		
+	}
   }
 }
 /**
@@ -1418,7 +1410,7 @@ void LCD_DisplayOn(void)
 {
   /* 开显示 */
   __HAL_LTDC_ENABLE(&Ltdc_Handler);
-//  HAL_GPIO_WritePin(LTDC_DISP_GPIO_PORT, LTDC_DISP_GPIO_PIN, GPIO_PIN_SET);/* LCD_DISP使能*/
+  HAL_GPIO_WritePin(LTDC_DISP_GPIO_PORT, LTDC_DISP_GPIO_PIN, GPIO_PIN_SET);/* LCD_DISP使能*/
   HAL_GPIO_WritePin(LTDC_BL_GPIO_PORT, LTDC_BL_GPIO_PIN, GPIO_PIN_SET);  /* 开背光*/
 }
 
@@ -1430,7 +1422,7 @@ void LCD_DisplayOff(void)
 {
   /* 关显示 */
   __HAL_LTDC_DISABLE(&Ltdc_Handler);
-//  HAL_GPIO_WritePin(LTDC_DISP_GPIO_PORT, LTDC_DISP_GPIO_PIN, GPIO_PIN_RESET); /* LCD_DISP禁能*/
+  HAL_GPIO_WritePin(LTDC_DISP_GPIO_PORT, LTDC_DISP_GPIO_PIN, GPIO_PIN_RESET); /* LCD_DISP禁能*/
   HAL_GPIO_WritePin(LTDC_BL_GPIO_PORT, LTDC_BL_GPIO_PIN, GPIO_PIN_RESET);/*关背光*/
 }
 
@@ -1661,96 +1653,96 @@ static void LL_ConvertLineToARGB8888(void *pSrc, void *pDst, uint32_t xSize, uin
     }
   } 
 }
-//#if GBKCODE_FLASH
+#if GBKCODE_FLASH
 
-///*使用FLASH字模*/
+/*使用FLASH字模*/
 
-////中文字库存储在FLASH的起始地址 ：
-////GBKCODE_START_ADDRESS 在fonts.h文件定义
-///**
-//  * @brief  获取FLASH中文显示字库数据
-//	* @param  pBuffer:存储字库矩阵的缓冲区
-//	* @param  c ： 要获取的文字
-//  * @retval None.
-//  */
-//int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
-//{ 
-//	unsigned char High8bit,Low8bit;
-//	unsigned int pos;
+//中文字库存储在FLASH的起始地址 ：
+//GBKCODE_START_ADDRESS 在fonts.h文件定义
+/**
+  * @brief  获取FLASH中文显示字库数据
+	* @param  pBuffer:存储字库矩阵的缓冲区
+	* @param  c ： 要获取的文字
+  * @retval None.
+  */
+int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
+{ 
+	unsigned char High8bit,Low8bit;
+	unsigned int pos;
 
-//	static uint8_t everRead=0;
+	static uint8_t everRead=0;
 
-//	/*第一次使用，初始化FLASH*/
-//	if(everRead == 0)
-//	{
-//		QSPI_FLASH_Init();
-//		everRead = 1;
-//	}
+	/*第一次使用，初始化FLASH*/
+	if(everRead == 0)
+	{
+		QSPI_FLASH_Init();
+		everRead = 1;
+	}
 
-//	High8bit= c >> 8;     /* 取高8位数据 */
-//	Low8bit= c & 0x00FF;  /* 取低8位数据 */		
+	High8bit= c >> 8;     /* 取高8位数据 */
+	Low8bit= c & 0x00FF;  /* 取低8位数据 */		
 
-//	/*GB2312 公式*/
-//	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
-//	BSP_QSPI_Read(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
-//	//	  printf ( "%02x %02x %02x %02x\n", pBuffer[0],pBuffer[1],pBuffer[2],pBuffer[3]);
+	/*GB2312 公式*/
+	pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
+	BSP_QSPI_Read(pBuffer,GBKCODE_START_ADDRESS+pos,24*24/8); //读取字库数据  
+	//	  printf ( "%02x %02x %02x %02x\n", pBuffer[0],pBuffer[1],pBuffer[2],pBuffer[3]);
 
-//	return 0;  
+	return 0;  
 
-//}
+}
 
-//#else
+#else
 
-///*使用SD字模*/
+/*使用SD字模*/
 
-//static FIL fnew;													/* file objects */
-//static FATFS fs;													/* Work area (file system object) for logical drives */
-//static FRESULT res_sd; 
-//static UINT br;            					/* File R/W count */
+static FIL fnew;													/* file objects */
+static FATFS fs;													/* Work area (file system object) for logical drives */
+static FRESULT res_sd; 
+static UINT br;            					/* File R/W count */
 
-////字库文件存储位置，fonts.h中的宏：
-////#define GBKCODE_FILE_NAME			"0:/Font/GB2312_H2424.FON"
+//字库文件存储位置，fonts.h中的宏：
+//#define GBKCODE_FILE_NAME			"0:/Font/GB2312_H2424.FON"
 
-///**
-//  * @brief  获取SD卡中文显示字库数据
-//	* @param  pBuffer:存储字库矩阵的缓冲区
-//	* @param  c ： 要获取的文字
-//  * @retval None.
-//  */
-//int GetGBKCode_from_sd ( uint8_t * pBuffer, uint16_t c)
-//{ 
-//    unsigned char High8bit,Low8bit;
-//    unsigned int pos;
-//		
-//		static uint8_t everRead = 0;
-//	
-//    High8bit= c >> 8;     /* 取高8位数据 */
-//    Low8bit= c & 0x00FF;  /* 取低8位数据 */
-//		
-//    pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
-//	
-//	/*第一次使用，挂载文件系统，初始化sd*/
-//	if(everRead == 0)
-//	{
-//		res_sd = f_mount(&fs,"0:",1);
-//		everRead = 1;
+/**
+  * @brief  获取SD卡中文显示字库数据
+	* @param  pBuffer:存储字库矩阵的缓冲区
+	* @param  c ： 要获取的文字
+  * @retval None.
+  */
+int GetGBKCode_from_sd ( uint8_t * pBuffer, uint16_t c)
+{ 
+    unsigned char High8bit,Low8bit;
+    unsigned int pos;
+		
+		static uint8_t everRead = 0;
+	
+    High8bit= c >> 8;     /* 取高8位数据 */
+    Low8bit= c & 0x00FF;  /* 取低8位数据 */
+		
+    pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*24*24/8;
+	
+	/*第一次使用，挂载文件系统，初始化sd*/
+	if(everRead == 0)
+	{
+		res_sd = f_mount(&fs,"0:",1);
+		everRead = 1;
 
-//	}
-//		
-//    res_sd = f_open(&fnew , GBKCODE_FILE_NAME, FA_OPEN_EXISTING | FA_READ);
-//    
-//    if ( res_sd == FR_OK ) 
-//    {
-//        f_lseek (&fnew, pos);		//指针偏移
-//        res_sd = f_read( &fnew, pBuffer, 24*24/8, &br );		 //24*24大小的汉字 其字模 占用24*24/8个字节
-//        
-//        f_close(&fnew);
-//        
-//        return 0;  
-//    }    
-//    else
-//        return -1;    
-//}
+	}
+		
+    res_sd = f_open(&fnew , GBKCODE_FILE_NAME, FA_OPEN_EXISTING | FA_READ);
+    
+    if ( res_sd == FR_OK ) 
+    {
+        f_lseek (&fnew, pos);		//指针偏移
+        res_sd = f_read( &fnew, pBuffer, 24*24/8, &br );		 //24*24大小的汉字 其字模 占用24*24/8个字节
+        
+        f_close(&fnew);
+        
+        return 0;  
+    }    
+    else
+        return -1;    
+}
 
-//#endif
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
