@@ -723,7 +723,9 @@ Output:
     } 
 		
 		//获取触摸IC的型号
-    GTP_Read_Version(); 
+    GTP_Read_Version();
+
+#if UPDATE_CONFIG
 		
 		//根据IC的型号指向不同的配置
 //根据IC的型号指向不同的配置
@@ -840,7 +842,7 @@ Output:
 	    		GTP_DEBUG("Config success ! i = %d ",i);
 	}
 #endif
-	
+#endif
 		
 	 /*使能中断，这样才能检测触摸数据*/
 		I2C_GTP_IRQEnable();
