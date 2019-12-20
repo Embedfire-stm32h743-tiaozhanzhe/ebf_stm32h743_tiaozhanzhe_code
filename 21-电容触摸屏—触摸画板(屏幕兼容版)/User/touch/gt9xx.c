@@ -122,8 +122,8 @@ uint8_t CTP_CFG_GT917S[] ={
 };
 
 
-uint8_t config[GTP_CONFIG_MAX_LENGTH + GTP_ADDR_LENGTH]
-                = {GTP_REG_CONFIG_DATA >> 8, GTP_REG_CONFIG_DATA & 0xff};
+//uint8_t config[GTP_CONFIG_MAX_LENGTH + GTP_ADDR_LENGTH]
+//                = {GTP_REG_CONFIG_DATA >> 8, GTP_REG_CONFIG_DATA & 0xff};
 
 /* 触摸IC类型默认为5寸屏的ic */
 TOUCH_IC touchIC = GT9157;								
