@@ -272,7 +272,7 @@ void SDRAM_Init(void)
 	/* 配置SDRAM时钟源*/
   RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FMC;
   RCC_PeriphClkInit.PLL2.PLL2M = 5;
-  RCC_PeriphClkInit.PLL2.PLL2N = 144;
+  RCC_PeriphClkInit.PLL2.PLL2N = 142;//如读写数据不正常，应当适当降低频率
   RCC_PeriphClkInit.PLL2.PLL2P = 2;
   RCC_PeriphClkInit.PLL2.PLL2Q = 2;
   RCC_PeriphClkInit.PLL2.PLL2R = 3;
