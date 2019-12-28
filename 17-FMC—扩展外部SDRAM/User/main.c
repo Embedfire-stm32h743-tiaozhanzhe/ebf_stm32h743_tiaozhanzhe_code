@@ -40,6 +40,7 @@ RNG_HandleTypeDef hrng;
   */
 int main(void)
 {   
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
 	
 	/* 系统时钟初始化成400MHz */
 	SystemClock_Config();
@@ -57,18 +58,10 @@ int main(void)
 	/*蓝灯亮，表示正在读写SDRAM测试*/
 	LED_BLUE;
 
-//  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FMC;
-//  PeriphClkInitStruct.PLL2.PLL2M = 5;
-//  PeriphClkInitStruct.PLL2.PLL2N = 144;
-//  PeriphClkInitStruct.PLL2.PLL2P = 2;
-//  PeriphClkInitStruct.PLL2.PLL2Q = 2;
-//  PeriphClkInitStruct.PLL2.PLL2R = 3;
-//  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
-//  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
-//  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
-//  PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
-//  
-//  HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RNG;
+  PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_PLL;
+  HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
+
   /*使能RNG时钟*/
   __HAL_RCC_RNG_CLK_ENABLE();
 	/*初始化RNG模块产生随机数*/
@@ -85,10 +78,6 @@ int main(void)
 	}  
   
 	printf("10000个SDRAM测试随机数生成完毕\r\n");
-  
-  RadomBuffer[6145] = 94561;
-  RadomBuffer[1000] = 35165;
-  RadomBuffer[0] = 465;
   
 	SDRAM_Check();
 
