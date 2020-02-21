@@ -141,7 +141,7 @@ int main(void)
       LED_RED;
       printf("！！打开/创建文件失败。\r\n");
     }
-    
+    HAL_Delay(10);
   /*------------------- 文件系统测试：读测试 ------------------------------------*/
     printf("****** 即将进行文件读取测试... ******\r\n");
     res_sd = f_open(&fnew, "0:FatFs读写测试文件.txt", FA_OPEN_EXISTING | FA_READ); 	 

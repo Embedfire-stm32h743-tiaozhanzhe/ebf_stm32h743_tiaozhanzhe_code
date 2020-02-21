@@ -68,7 +68,7 @@ DRESULT SD_read(BYTE lun,//物理扇区，多个设备时用到(0...)
   DRESULT res = RES_ERROR;
   uint32_t timeout;
   uint32_t alignedAddr;
-
+  uint32_t time_out;
   RX_Flag = 0;
   
   alignedAddr = (uint32_t)buff & ~0x1F;
@@ -82,6 +82,12 @@ DRESULT SD_read(BYTE lun,//物理扇区，多个设备时用到(0...)
     timeout = HAL_GetTick();
     while((RX_Flag == 0) && ((HAL_GetTick() - timeout) < SD_TIMEOUT))
     {
+				time_out++;
+				if(time_out == SD_TIMEOUT )
+				{						
+						time_out = 0;
+				    break;
+				}
     }
     /* incase of a timeout return error */
     if (RX_Flag == 0)
