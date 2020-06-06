@@ -210,7 +210,7 @@ extern const TOUCH_PARAM_TypeDef touch_param[];
 //***************************PART1:ON/OFF define*******************************
 
 #define GTP_DEBUG_ON         	1
-#define GTP_DEBUG_ARRAY_ON    0
+#define GTP_DEBUG_ARRAY_ON    1
 #define GTP_DEBUG_FUNC_ON   	0
 // Log define
 #define GTP_INFO(fmt,arg...)           printf("<<-GTP-INFO->> "fmt"\n",##arg)
