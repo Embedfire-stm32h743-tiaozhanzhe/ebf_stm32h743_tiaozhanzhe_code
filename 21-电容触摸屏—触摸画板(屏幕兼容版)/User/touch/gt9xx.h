@@ -228,7 +228,7 @@ extern const TOUCH_PARAM_TypeDef touch_param[];
                                             printf("<<-GTP-DEBUG-ARRAY->>\n");\
                                             for (i = 0; i < (num); i++)\
                                             {\
-                                                printf("%02x   ", (a)[i]);\
+                                                printf("0x%02x,", (a)[i]);\
                                                 if ((i + 1 ) %10 == 0)\
                                                 {\
                                                     printf("\n");\
