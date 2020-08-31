@@ -21,11 +21,11 @@
 
 #define SENSORS_I2C_SCL_GPIO_PORT         		GPIOB
 #define SENSORS_I2C_SCL_GPIO_CLK_ENABLE()    	__GPIOB_CLK_ENABLE()
-#define SENSORS_I2C_SCL_GPIO_PIN         		  GPIO_PIN_8
+#define SENSORS_I2C_SCL_GPIO_PIN         		  GPIO_PIN_6
  
 #define SENSORS_I2C_SDA_GPIO_PORT         		GPIOB
 #define SENSORS_I2C_SDA_GPIO_CLK_ENABLE()   	__GPIOB_CLK_ENABLE()
-#define SENSORS_I2C_SDA_GPIO_PIN          		GPIO_PIN_9
+#define SENSORS_I2C_SDA_GPIO_PIN          		GPIO_PIN_7
 
 #define SENSORS_I2C_AF                    		GPIO_AF4_I2C1
 

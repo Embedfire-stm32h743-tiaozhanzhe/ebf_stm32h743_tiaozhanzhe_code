@@ -65,84 +65,79 @@ typedef enum
 
 /*摄像头接口 */
 //IIC SCCB
-#define CAMERA_I2C                          I2C1
-#define CAMERA_I2C_CLK_ENABLE()             __HAL_RCC_I2C1_CLK_ENABLE()
+#define CAMERA_I2C                          I2C4
+#define CAMERA_I2C_CLK_ENABLE()             __HAL_RCC_I2C4_CLK_ENABLE()
 
-#define CAMERA_I2C_SCL_PIN                  GPIO_PIN_8
-#define CAMERA_I2C_SCL_GPIO_PORT            GPIOB
-#define CAMERA_I2C_SCL_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
-#define CAMERA_I2C_SCL_AF                   GPIO_AF4_I2C1
+#define CAMERA_I2C_SCL_PIN                  GPIO_PIN_12
+#define CAMERA_I2C_SCL_GPIO_PORT            GPIOD
+#define CAMERA_I2C_SCL_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOD_CLK_ENABLE()
+#define CAMERA_I2C_SCL_AF                   GPIO_AF4_I2C4
 
-#define CAMERA_I2C_SDA_PIN                  GPIO_PIN_9
-#define CAMERA_I2C_SDA_GPIO_PORT            GPIOB
-#define CAMERA_I2C_SDA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
-#define CAMERA_I2C_SDA_AF                   GPIO_AF4_I2C1
+#define CAMERA_I2C_SDA_PIN                  GPIO_PIN_13
+#define CAMERA_I2C_SDA_GPIO_PORT            GPIOD
+#define CAMERA_I2C_SDA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOD_CLK_ENABLE()
+#define CAMERA_I2C_SDA_AF                   GPIO_AF4_I2C4
 
 //VSYNC
-#define DCMI_VSYNC_GPIO_PORT        	    GPIOB
-#define DCMI_VSYNC_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOB_CLK_ENABLE()
-#define DCMI_VSYNC_GPIO_PIN         	    GPIO_PIN_7
-#define DCMI_VSYNC_AF			                GPIO_AF13_DCMI
+#define DCMI_VSYNC_GPIO_PORT        	    GPIOI
+#define DCMI_VSYNC_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOI_CLK_ENABLE()
+#define DCMI_VSYNC_GPIO_PIN         	    GPIO_PIN_5
+#define DCMI_VSYNC_AF			            GPIO_AF13_DCMI
 // HSYNC
 #define DCMI_HSYNC_GPIO_PORT        	    GPIOA
 #define DCMI_HSYNC_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOA_CLK_ENABLE()
 #define DCMI_HSYNC_GPIO_PIN         	    GPIO_PIN_4
-#define DCMI_HSYNC_AF			                GPIO_AF13_DCMI
+#define DCMI_HSYNC_AF			            GPIO_AF13_DCMI
 //PIXCLK
 #define DCMI_PIXCLK_GPIO_PORT        	    GPIOA
 #define DCMI_PIXCLK_GPIO_CLK_ENABLE()       __HAL_RCC_GPIOA_CLK_ENABLE()
 #define DCMI_PIXCLK_GPIO_PIN         	    GPIO_PIN_6
-#define DCMI_PIXCLK_AF			              GPIO_AF13_DCMI
+#define DCMI_PIXCLK_AF			            GPIO_AF13_DCMI
 //PWDN
-#define DCMI_PWDN_GPIO_PORT        	        GPIOB
-#define DCMI_PWDN_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOB_CLK_ENABLE()
-#define DCMI_PWDN_GPIO_PIN         	        GPIO_PIN_10
-
-//RST
-#define DCMI_RST_GPIO_PORT        	        GPIOF
-#define DCMI_RST_GPIO_CLK_ENABLE()          __HAL_RCC_GPIOF_CLK_ENABLE()
-#define DCMI_RST_GPIO_PIN         	        GPIO_PIN_10
+#define DCMI_PWDN_GPIO_PORT        	        GPIOG
+#define DCMI_PWDN_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOG_CLK_ENABLE()
+#define DCMI_PWDN_GPIO_PIN         	        GPIO_PIN_3
 
 //数据信号线
-#define DCMI_D0_GPIO_PORT        	        GPIOC
-#define DCMI_D0_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOC_CLK_ENABLE()
-#define DCMI_D0_GPIO_PIN         	        GPIO_PIN_6
-#define DCMI_D0_AF			                  GPIO_AF13_DCMI
+#define DCMI_D0_GPIO_PORT        	        GPIOH
+#define DCMI_D0_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOH_CLK_ENABLE()
+#define DCMI_D0_GPIO_PIN         	        GPIO_PIN_9
+#define DCMI_D0_AF			                GPIO_AF13_DCMI
 
-#define DCMI_D1_GPIO_PORT        	        GPIOC
-#define DCMI_D1_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOC_CLK_ENABLE()
-#define DCMI_D1_GPIO_PIN         	        GPIO_PIN_7
-#define DCMI_D1_AF			                  GPIO_AF13_DCMI
+#define DCMI_D1_GPIO_PORT        	        GPIOH
+#define DCMI_D1_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOH_CLK_ENABLE()
+#define DCMI_D1_GPIO_PIN         	        GPIO_PIN_10
+#define DCMI_D1_AF			                GPIO_AF13_DCMI
 
 #define DCMI_D2_GPIO_PORT        	        GPIOH
 #define DCMI_D2_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOH_CLK_ENABLE()
 #define DCMI_D2_GPIO_PIN         	        GPIO_PIN_11
-#define DCMI_D2_AF			                  GPIO_AF13_DCMI
+#define DCMI_D2_AF			                GPIO_AF13_DCMI
 
-#define DCMI_D3_GPIO_PORT        	        GPIOG
-#define DCMI_D3_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOG_CLK_ENABLE()
-#define DCMI_D3_GPIO_PIN         	        GPIO_PIN_10
-#define DCMI_D3_AF			                  GPIO_AF13_DCMI
+#define DCMI_D3_GPIO_PORT        	        GPIOH
+#define DCMI_D3_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOH_CLK_ENABLE()
+#define DCMI_D3_GPIO_PIN         	        GPIO_PIN_12
+#define DCMI_D3_AF			                GPIO_AF13_DCMI
 
-#define DCMI_D4_GPIO_PORT        	        GPIOE
-#define DCMI_D4_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOE_CLK_ENABLE()
-#define DCMI_D4_GPIO_PIN         	        GPIO_PIN_4
-#define DCMI_D4_AF			                  GPIO_AF13_DCMI
+#define DCMI_D4_GPIO_PORT        	        GPIOH
+#define DCMI_D4_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOH_CLK_ENABLE()
+#define DCMI_D4_GPIO_PIN         	        GPIO_PIN_14
+#define DCMI_D4_AF			                GPIO_AF13_DCMI
 
 #define DCMI_D5_GPIO_PORT        	        GPIOD
-#define DCMI_D5_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOD_CLK_ENABLE()
+#define DCMI_D5_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOD_CLK_ENABLE()
 #define DCMI_D5_GPIO_PIN         	        GPIO_PIN_3
-#define DCMI_D5_AF			                  GPIO_AF13_DCMI
+#define DCMI_D5_AF			                GPIO_AF13_DCMI
 
-#define DCMI_D6_GPIO_PORT        	        GPIOE
-#define DCMI_D6_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOE_CLK_ENABLE()
-#define DCMI_D6_GPIO_PIN         	        GPIO_PIN_5
-#define DCMI_D6_AF			                  GPIO_AF13_DCMI
+#define DCMI_D6_GPIO_PORT        	        GPIOI
+#define DCMI_D6_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOI_CLK_ENABLE()
+#define DCMI_D6_GPIO_PIN         	        GPIO_PIN_6
+#define DCMI_D6_AF			                GPIO_AF13_DCMI
 
-#define DCMI_D7_GPIO_PORT        	        GPIOE
-#define DCMI_D7_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOE_CLK_ENABLE()
-#define DCMI_D7_GPIO_PIN         	        GPIO_PIN_6
-#define DCMI_D7_AF			                  GPIO_AF13_DCMI
+#define DCMI_D7_GPIO_PORT        	        GPIOI
+#define DCMI_D7_GPIO_CLK_ENABLE()         	__HAL_RCC_GPIOI_CLK_ENABLE()
+#define DCMI_D7_GPIO_PIN         	        GPIO_PIN_7
+#define DCMI_D7_AF			                GPIO_AF13_DCMI
 
 
 /*debug*/
